@@ -17,6 +17,7 @@ from . import common as C
 from . import rules as R
 from . import Cubes as CB
 from . import DemoData
+from . import Quests as Q
 
 
 def _taken(exclude=None):
@@ -58,7 +59,7 @@ def get_world():
     cubes.sort(key=lambda c: (c["owner"] != me, -(c["last_active"] or C.now()).timestamp()))
     home = [CB.tiny(c) for c in app_tables.cubes.search(tables.order_by("born", ascending=True), owner=me, in_world=False)]
     return {"w": R.WORLD_W, "d": R.WORLD_D, "props": R.PROPS, "cubes": [CB.cube_light(c, me) for c in cubes[:150]],
-            "chats": _chats(), "happenings": CB.recent_happenings(8), "chat_wait": chat_wait(me),
+            "chats": _chats(), "happenings": CB.recent_happenings(8), "chat_wait": chat_wait(me), "egg": CB.egg_get(),
             "me": {"sparkles": me["sparkles"] or 0, "out": len([c for c in cubes if c["owner"] == me]), "max_out": R.WORLD_PER_PLAYER},
             "home": home[:R.MAX_CUBES], "rules": {"hand_dist": R.HAND_DIST, "love_max": R.LOVE_MAX, "chat_gap": R.CHAT_GAP}}
 
@@ -84,14 +85,14 @@ def send_to_world(cube_id, out=True):
     return C.ok(cube=CB.cube_dict(c, me, drawing=False))
 
 
-def _new_baby(owner, a, b, is_demo):
+def _new_baby(owner, a, b, is_demo, seen=True):
     color = R.mix_colors(a["color"] or "#ff5fa2", b["color"] or "#6cc6ff")
     return app_tables.cubes.add_row(
         owner=owner, name=R.baby_name(a["name"], b["name"]), color=color,
         eyes=R.RNG.choice([int(a["eyes"] or 0), int(b["eyes"] or 0)]), mouth=R.RNG.choice([int(a["mouth"] or 0), int(b["mouth"] or 0)]),
         drawing="", drawing_v=0, hat="", gen=max(int(a["gen"] or 1), int(b["gen"] or 1)) + 1, handmade=False,
         parent_a=a, parent_b=b, born=C.now(), love=0, rolls=0, orient=R.START_ORIENT, in_world=False, wx=0, wz=0,
-        open_hands=True, last_active=C.now(), is_demo=is_demo)
+        open_hands=True, last_active=C.now(), is_demo=is_demo, seen=seen)
 
 
 def _baby_budget(u):
@@ -150,7 +151,7 @@ def hold_hands(my_cube_id, their_cube_id):
     if partner is not None and not partner["is_demo"] and not theirs["is_demo"]:
         CB.player(partner)
         if _baby_budget(partner) < R.BABIES_PER_DAY and len(app_tables.cubes.search(owner=partner)) < R.MAX_CUBES:
-            _new_baby(partner, theirs, mine, False)
+            _new_baby(partner, theirs, mine, False, seen=False)
             partner.update(babies_today=(partner["babies_today"] or 0) + 1)
             CB.add_sparkles(partner, 10)
             twin = True
@@ -159,7 +160,9 @@ def hold_hands(my_cube_id, their_cube_id):
     theirs.update(nap_until=nap)
     CB.happening("birth", "%s was born! %s held hands with %s." % (baby["name"], mine["name"], theirs["name"]),
                  {"color": baby["color"], "a": mine["color"], "b": theirs["color"]})
-    return C.ok(baby=CB.cube_dict(baby, me), twin=twin, partner_owner=C.name_of(partner), sparkles=me["sparkles"])
+    done = Q.bump(me, "hands")
+    return C.ok(baby=CB.cube_dict(baby, me), twin=twin, partner_owner=C.name_of(partner), sparkles=me["sparkles"],
+                quests_done=done)
 
 
 @anvil.server.callable(require_user=True)
@@ -181,5 +184,6 @@ def send_chat(text, cube_id=None):
         cube = mine[0] if mine else None
     app_tables.chats.add_row(user=me, cube=cube, text=msg, created=C.now(), is_demo=False)
     me.update(last_chat=C.now(), chats_sent=(me["chats_sent"] or 0) + 1)
+    done = Q.bump(me, "chat")
     _sweep()
-    return C.ok(text=msg, wait=R.CHAT_GAP, chats=_chats())
+    return C.ok(text=msg, wait=R.CHAT_GAP, chats=_chats(), quests_done=done)

@@ -170,6 +170,16 @@ db_schema:
         width: 200
       name: is_demo
       type: bool
+    - admin_ui:
+        order: 23
+        width: 200
+      name: recent
+      type: string
+    - admin_ui:
+        order: 24
+        width: 200
+      name: seen
+      type: bool
     indexes: []
     server: full
     title: Cubes
@@ -436,6 +446,30 @@ db_schema:
       client_hidden: false
       name: chats_sent
       type: number
+    - admin_ui:
+        order: 24
+        width: 200
+      client_hidden: false
+      name: quests
+      type: simpleObject
+    - admin_ui:
+        order: 25
+        width: 200
+      client_hidden: false
+      name: eggs
+      type: number
+    - admin_ui:
+        order: 26
+        width: 200
+      client_hidden: false
+      name: rainbows
+      type: number
+    - admin_ui:
+        order: 27
+        width: 200
+      client_hidden: false
+      name: chests
+      type: number
     indexes: []
     server: full
     title: Users
@@ -445,7 +479,7 @@ metadata:
   title: QuickyBricks
 name: QuickyBricks
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=8f6b171650\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=58f2ee9f01\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
     \ initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#fff4e0\">\n<meta name=\"apple-mobile-web-app-capable\"\
     \ content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"\
     https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Lilita+One&display=swap\"\
@@ -454,7 +488,7 @@ native_deps:
     \ its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n\
     \    if (!ours) return;\n    document.querySelectorAll('link[rel~=\"icon\"]').forEach(function (l) { if (l !== ours) l.remove();\
     \ });\n  }\n  keep();\n  document.addEventListener('DOMContentLoaded', keep);\n  window.addEventListener('load', keep);\n\
-    })();\n</script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=b0c494f992\">\n<script src=\"_/theme/app.js?v=da1f422cce\"\
+    })();\n</script>\n<link rel=\"stylesheet\" href=\"_/theme/app.css?v=1f8fe093c8\">\n<script src=\"_/theme/app.js?v=91dd99667d\"\
     ></script>\n"
 package_name: QuickyBricks
 runtime_options:

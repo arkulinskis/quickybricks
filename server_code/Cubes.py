@@ -13,6 +13,7 @@ import anvil.tables as tables
 from . import common as C
 from . import rules as R
 from . import DemoData
+from . import Quests as Q
 
 
 # ------------------------------------------------------------------------------------------- players
@@ -86,7 +87,7 @@ def cube_dict(c, me=None, drawing=True):
     d = cube_light(c, me)
     d.update({"drawing": (c["drawing"] or "") if drawing else None, "handmade": bool(c["handmade"]),
               "born": C.iso(c["born"]), "rolls": int(c["rolls"] or 0), "in_world": bool(c["in_world"]),
-              "color_name": R.color_name(c["color"] or "#ff5fa2"),
+              "color_name": R.color_name(c["color"] or "#ff5fa2"), "recent": c["recent"] or "",
               "grow_left": 0 if grown(c) else R.GROW_ROLLS - int(c["rolls"] or 0)})
     return d
 
@@ -135,8 +136,62 @@ def get_cubby():
     DemoData.ensure_loaded()
     me = player(C.require_user())
     rows = app_tables.cubes.search(tables.order_by("born", ascending=True), owner=me)
+    surprises = []
+    for c in app_tables.cubes.search(owner=me, seen=False):
+        d = cube_dict(c, me)
+        d["parents"] = [tiny(p) for p in (c["parent_a"], c["parent_b"]) if p is not None]
+        surprises.append(d)
     return {"me": stats(me), "cubes": [cube_dict(c, me) for c in rows[:R.MAX_CUBES]],
-            "happenings": recent_happenings(5), "colors": R.CREATE_COLORS}
+            "happenings": recent_happenings(5), "colors": R.CREATE_COLORS, "quests": Q.view(me), "surprises": surprises}
+
+
+@anvil.server.callable(require_user=True)
+def mark_seen(ids):
+    """The player has met these surprise babies (born when someone else's cube held hands with theirs)."""
+    me = C.require_user()
+    for i in (ids or [])[:50]:
+        c = C.row_by_id(app_tables.cubes, i)
+        if c is not None and c["owner"] == me:
+            c["seen"] = True
+    return C.ok()
+
+
+@anvil.server.callable
+def get_pulse():
+    """Live numbers for the landing page (anyone)."""
+    DemoData.ensure_loaded()
+    start = C.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    babies = [c for c in app_tables.cubes.search(handmade=False) if c["born"] and c["born"] >= start]
+    return {"cubes": len(app_tables.cubes.search()), "babies_today": len(babies),
+            "in_world": len(app_tables.cubes.search(in_world=True)), "latest": recent_happenings(3)}
+
+
+# ------------------------------------------------------------------------------------------- the Surprise Egg
+def egg_get():
+    """The egg's tile {x, z} in the World, placing a new one when it's time (or None while waiting)."""
+    e = C.get_setting("egg", None) or {}
+    if e.get("x") is not None:
+        return {"x": e["x"], "z": e["z"]}
+    nxt = e.get("next")
+    if nxt and C.now().isoformat() < nxt:
+        return None
+    taken = {(int(o["wx"] or 0), int(o["wz"] or 0)) for o in app_tables.cubes.search(in_world=True)}
+    free = [(x, z) for x in range(R.WORLD_W) for z in range(R.WORLD_D) if (x, z) not in R.BLOCKED and (x, z) not in taken]
+    if not free:
+        return None
+    x, z = R.RNG.choice(free)
+    C.set_setting("egg", {"x": x, "z": z})
+    return {"x": x, "z": z}
+
+
+def egg_take(x, z):
+    """True if the egg is on (x, z); then it's gone and a new one comes after rules.EGG_WAIT seconds."""
+    e = C.get_setting("egg", None) or {}
+    if e.get("x") == x and e.get("z") == z:
+        import datetime as _dt
+        C.set_setting("egg", {"next": (C.now() + _dt.timedelta(seconds=R.EGG_WAIT)).isoformat()})
+        return True
+    return False
 
 
 @anvil.server.callable(require_user=True)
@@ -187,11 +242,15 @@ def update_cube(cube_id, changes):
             return C.fail("That drawing is too big. Try a simpler one!")
         upd["drawing"] = dr
         upd["drawing_v"] = int(c["drawing_v"] or 0) + 1
+        if dr:
+            Q.bump(me, "doodle")
     if "hat" in changes:
         hat = changes["hat"] or ""
         if hat and (hat not in R.HAT_KEYS or hat not in inventory(me)["hats"]):
             return C.fail("Get that hat in the Shop first!")
         upd["hat"] = hat
+        if hat and hat != c["hat"]:
+            Q.bump(me, "hat")
     if "open" in changes:
         upd["open_hands"] = bool(changes["open"])
     if upd:
@@ -224,16 +283,46 @@ def roll_cube(cube_id, direction, where="home"):
     rw = R.reward(event)
     was_grown = grown(c)
     love = min(R.LOVE_MAX, int(c["love"] or 0) + rw["love"])
-    c.update(orient=orient, love=love, rolls=int(c["rolls"] or 0) + 1, last_active=C.now())
+    # Rainbow Roll: all six sides on top within the cube's last six rolls
+    recent = ((c["recent"] or "") + orient[0])[-6:]
+    rw["rainbow"] = len(set(recent)) == 6
+    if rw["rainbow"]:
+        rw["sparkles"] += R.RAINBOW_BONUS
+        recent = ""
+    c.update(orient=orient, love=love, rolls=int(c["rolls"] or 0) + 1, last_active=C.now(), recent=recent)
     rw["grew"] = not was_grown and grown(c)
     if rw["grew"]:
         rw["sparkles"] += 10
+    rw["egg"] = None
+    if where == "world" and egg_take(int(c["wx"]), int(c["wz"])):
+        inv = inventory(me)
+        prize = {"sparkles": R.EGG_SPARKLES, "hat": None}
+        missing = [k for k, _, _ in R.HATS if k not in inv["hats"]]
+        if missing and R.RNG.random() < 1 / 3:
+            prize["hat"] = R.RNG.choice(missing)
+            inv["hats"] = inv["hats"] + [prize["hat"]]
+            me["inventory"] = inv
+        rw["sparkles"] += R.EGG_SPARKLES
+        rw["egg"] = prize
+        happening("egg", "%s found a Surprise Egg!" % c["name"], {"color": c["color"]})
     total = add_sparkles(me, rw["sparkles"])
     me["rolls"] = (me["rolls"] or 0) + 1
+    if rw["rainbow"]:
+        me["rainbows"] = (me["rainbows"] or 0) + 1
+    if rw["egg"]:
+        me["eggs"] = (me["eggs"] or 0) + 1
     if rw["golden"]:
         me["golden"] = (me["golden"] or 0) + 1
         happening("golden", "%s had a GOLDEN disco moment!" % c["name"], {"color": c["color"]})
-    return C.ok(event=event, reward=rw, sparkles=total, cube=cube_dict(c, me, drawing=False))
+    done = Q.bump(me, "roll") + Q.bump(me, event)
+    if where == "world":
+        done += Q.bump(me, "world_roll")
+    if rw["rainbow"]:
+        done += Q.bump(me, "rainbow")
+    if rw["egg"]:
+        done += Q.bump(me, "egg")
+    return C.ok(event=event, reward=rw, sparkles=total, cube=cube_dict(c, me, drawing=False), quests_done=done,
+                recent=recent)
 
 
 @anvil.server.callable

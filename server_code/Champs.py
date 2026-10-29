@@ -22,6 +22,9 @@ STICKERS = [
     ("faces25", "Face Collector", "Collect 25 different faces", "😜"),
     ("hats5", "Fashionista", "Own 5 hats", "🎩"),
     ("chatty", "Chatterbox", "Send a chat message", "💬"),
+    ("egg", "Egg Hunter", "Find a Surprise Egg in the World", "🥚"),
+    ("rainbowroll", "Rainbow Roller", "Land all 6 sides in 6 rolls", "🌈"),
+    ("quests", "Quest Champ", "Open a daily quest chest", "🧰"),
 ]
 
 
@@ -37,6 +40,8 @@ def _stickers(u, cubes):
         "c100": len(cubes) >= 100, "gen3": gen >= 3, "gen5": gen >= 5, "golden": (u["golden"] or 0) > 0,
         "roll100": rolls >= 100, "roll1000": rolls >= 1000, "rainbow": len(colors) >= 7, "faces25": len(faces) >= 25,
         "hats5": len(inv["hats"]) >= 5, "chatty": (u["chats_sent"] or 0) > 0,
+        "egg": (u["eggs"] or 0) > 0, "rainbowroll": (u["rainbows"] or 0) > 0,
+        "quests": (u["chests"] or 0) > 0,
     }
     return [{"key": k, "name": n, "how": h, "emoji": e, "got": bool(got[k])} for k, n, h, e in STICKERS]
 

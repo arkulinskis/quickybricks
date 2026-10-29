@@ -23,14 +23,31 @@ cube" leads to sign-up and the cube moves into the new player's Cubby automatica
   blended name (Sprinkle + Gummy = Sprinummy) and generation = max(parents) + 1. Babies grow up after 10 rolls.
   Both parents then rest 2 hours. 12 babies a day per player.
 - The goal: as many cubes as possible.
+- **Rainbow Roll:** land all six sides on top within a cube's last six rolls: +30 ✨ (tracked per cube in `cubes.recent`).
+- **Surprise Egg:** one 🥚 hides on a free World tile; the first cube to roll onto it gets +25 ✨ and, 1 time in 3, a free hat.
+  A new egg appears 90 s later.
+- **Daily quests:** three per player per day (always one easy rolling quest), each worth 10-40 ✨, plus a bonus chest
+  (+30 ✨) when all three are claimed.
+- **Limited hats:** Pumpkin Head + Witch Hat (Oct-Nov), Santa Hat + Reindeer Antlers (Dec-Jan), Bunny Ears (Mar-Apr),
+  Sun Hat (Jun-Aug). Only buyable in season; kept forever.
+- **Surprise babies:** when someone's cube holds hands with yours, your twin baby is waiting with a reveal the next time
+  you open your Cubby.
+
+**Alive everywhere:** every preview cube (landing, Maker, cube card) really rolls across its round mat; tapping a cube
+pushes it (it tumbles away from your finger); cubes in the Cubby and the World hop, wiggle, yawn, giggle and spin by
+themselves; seasonal decorations (Halloween pumpkins and bats, winter snow and snowmen, spring flowers, summer palms);
+the World turns to night with stars and a moon from 8 pm to 7 am; 📸 snapshots of the Cubby and the World; a family
+poster PNG from any cube card; live numbers on the landing page (cubes, babies born today, cubes in the World).
 
 **For players:**
 - **Cubby** (`#cubby`, home): a 3D play mat with up to 16 cubes to roll around, every cube as a thumbnail, sparkles,
-  the hand-made counter (x/10), the daily gift (streak up to 7 days: 15 → 45 ✨) and World news.
+  the hand-made counter (x/10), the daily gift (streak up to 7 days: 15 → 45 ✨), today's quests + chest, the Rainbow Roll
+  tracker for the picked cube, surprise-baby reveals and World news. Tap the picked cube again to push it.
 - **Cube Maker** (`#make`): colour (24), eyes (10), mouth (10), doodle pad (crayons, rainbow, stamps, eraser, undo),
   name with a 🎲; live 3D preview. `#make/<id>` redraws or renames an existing cube.
 - **Cube card** (`#cube/<id>`): roll it, hat wardrobe, open/close hands, send to the World or home, Love Potion,
-  Wake-Up Whistle, family tree (parents, grandparents, babies). Other players' cubes: Report.
+  Wake-Up Whistle, Rainbow Roll tracker, family tree (parents, grandparents, babies) and a family poster download.
+  Other players' cubes: Report.
 - **The World** (`#world`): a candy island (lollipop trees, jelly pond, gazebo, mushrooms, donut, pinwheel, rainbow,
   clouds) with everyone's cubes (3 per player at once). Roll yours around, tap others to hold hands, live updates
   every 3 s, demo cubes chatter. **Chat:** 1-3 symbols (A-Z, 0-9, ! ?, 16 emoji), one message per 30 s (page and

@@ -329,6 +329,10 @@ html, body { background-color: var(--c-bg) !important;
 .qb-pop.small { font-size: 1.15rem; }
 @keyframes qb-float { 0% { opacity: 0; margin-top: 10px; scale: .5; } 15% { opacity: 1; scale: 1.15; } 30% { scale: 1; } 80% { opacity: 1; } 100% { opacity: 0; margin-top: -70px; } }
 .qb-nogl { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 20px; color: var(--c-muted); font-weight: 700; }
+.qb-snap { right: 58px !important; }
+.qb-rainbow { display: flex; gap: 4px; justify-content: center; }
+.qb-rainbow span { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-size: .9rem; background: var(--c-surface-2); border: 2px solid var(--c-line); filter: grayscale(1); opacity: .5; }
+.qb-rainbow span.on { filter: none; opacity: 1; border-color: var(--c-outline); background: var(--c-lemon); }
 .qb-sound { position: absolute; top: 10px; right: 10px; z-index: 3; width: 40px; height: 40px; border-radius: 50%; border: 3px solid #3b2a5a; background: #fff;
   box-shadow: 0 3px 0 #3b2a5a; font-size: 1.1rem; cursor: pointer; display: grid; place-items: center; padding: 0; }
 
@@ -450,6 +454,19 @@ html, body { background-color: var(--c-bg) !important;
 .cb-new { display: grid; place-items: center; align-content: center; gap: 4px; min-height: 150px; border-style: dashed; background: var(--c-surface-2); }
 .cb-new .plus { font: 400 2.6rem/1 var(--font-display); color: var(--c-brand); }
 .cb-sec { margin-top: 30px; }
+.cb-quests { display: grid; gap: 10px; }
+.cb-q { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; background: var(--c-surface); border: 3px solid var(--c-outline);
+  border-radius: 18px; padding: 10px 12px; box-shadow: 3px 3px 0 var(--c-outline); }
+.cb-q.claimed { opacity: .6; box-shadow: none; }
+.cb-q .em { font-size: 1.5rem; text-align: center; }
+.cb-q b { font: 400 1rem/1.15 var(--font-display); letter-spacing: .02em; display: block; }
+.cb-q .bar { height: 10px; border-radius: 99px; background: var(--c-surface-2); border: 2px solid var(--c-outline); overflow: hidden; margin-top: 5px; }
+.cb-q .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--c-accent), #4cd964); }
+.cb-chest { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; border: 3px dashed var(--c-brand); border-radius: 18px; padding: 10px 14px; font-weight: 800; background: var(--c-brand-soft); }
+.cb-chest.ready { animation: qb-wiggle 1s ease-in-out infinite; border-style: solid; }
+.cb-sel .qb-rainbow { margin-top: 8px; }
+.cb-surprise { text-align: center; }
+.cb-surprise .qb-thumb { margin: 0 auto; animation: qb-pop-in .6s cubic-bezier(.3,1.6,.6,1); }
 .cb-sec h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .cb-news { display: grid; gap: 8px; }
 .cb-news div { display: flex; gap: 10px; align-items: center; font-weight: 700; background: var(--c-surface); border: 2px solid var(--c-line); border-radius: 14px; padding: 8px 12px; }
@@ -497,6 +514,8 @@ html, body { background-color: var(--c-bg) !important;
 .lp-lead { font-size: 1.2rem; color: var(--c-muted); max-width: 30em; margin-bottom: 22px; font-weight: 600; }
 .lp-cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .lp-proof { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+.lp-pulse { margin-top: 14px; display: flex; gap: 6px 16px; flex-wrap: wrap; font-weight: 800; color: var(--c-muted); font-size: .95rem; }
+.lp-pulse b { color: var(--c-brand); font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; }
 .lp-play { background: var(--c-surface); border: 4px solid var(--c-outline); border-radius: 34px; box-shadow: 8px 8px 0 var(--c-outline); padding: 14px; position: relative; }
 .lp-play::before { content: "TRY ME!"; position: absolute; top: -18px; left: 22px; z-index: 4; font: 400 1rem/1 var(--font-display); letter-spacing: .05em; background: var(--c-lemon);
   color: #3b2a5a; border: 3px solid var(--c-outline); border-radius: 999px; padding: 7px 14px 5px; transform: rotate(-4deg); box-shadow: 0 3px 0 var(--c-outline); }
@@ -613,6 +632,9 @@ html, body { background-color: var(--c-bg) !important;
 .sh-item h3 { margin: 4px 0 0; font-size: 1.05rem; }
 .sh-item p { margin: 0; font-size: .82rem; color: var(--c-muted); font-weight: 700; }
 .sh-sec { margin-top: 28px; }
+.sh-item { position: relative; }
+.sh-item.limited { background: linear-gradient(160deg, var(--c-surface), var(--c-warn-soft)); }
+.sh-lim { position: absolute; top: -12px; left: 50%; transform: translateX(-50%) rotate(-3deg); background: var(--c-lemon) !important; color: #3b2a5a !important; }
 .sh-earn { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
 .sh-earn span { font-weight: 800; font-size: .9rem; background: var(--c-surface-2); border-radius: 12px; padding: 6px 10px; }
 
@@ -621,6 +643,8 @@ html, body { background-color: var(--c-bg) !important;
 .wd { position: relative; height: calc(100vh - var(--header-h) - 3px); min-height: 480px; }
 .wd-stage { position: absolute; inset: 0; background: linear-gradient(180deg, #8fdcff, #d8f4ff 55%, #fff1f8); }
 .ui-dark .wd-stage { background: linear-gradient(180deg, #1a1440, #3b2a6b 60%, #5a3a78); }
+.wd-stage.qb-night { background: linear-gradient(180deg, #070523, #1d1650 55%, #3b2a6b); }
+.wd-egg { cursor: pointer; background: var(--c-lemon) !important; color: #3b2a5a; animation: qb-wiggle 1.2s ease-in-out infinite; }
 .wd-hud { position: absolute; left: 12px; top: 12px; display: flex; gap: 8px; flex-wrap: wrap; z-index: 3; max-width: calc(100% - 70px); }
 .wd-hud .ui-badge { background: var(--c-surface); font-size: .85rem; padding: 6px 10px 5px; }
 .wd-mine { position: absolute; right: 12px; top: 62px; width: 230px; z-index: 3; display: grid; gap: 8px; }
@@ -652,7 +676,8 @@ html, body { background-color: var(--c-bg) !important;
 .wd-pick button .qb-thumb { margin: 0 auto; }
 @media (max-width: 760px) {
   .wd { height: calc(100vh - var(--header-h) - 70px); min-height: 440px; }
-  .wd-mine { top: 104px; right: 8px; width: 150px; }
+  .wd-mine { top: 150px; right: 8px; width: 150px; }
+  .wd-egg .long { display: none; }
   .wd-me { padding: 4px 6px; } .wd-me .qb-thumb { width: 34px !important; height: 34px !important; }
   .wd-bottom { left: 8px; right: 8px; bottom: 8px; gap: 8px; }
   .wd-chat { width: auto; flex: 1; padding: 6px; }

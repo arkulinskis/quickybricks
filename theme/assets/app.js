@@ -495,6 +495,17 @@
     cat: ['Cat Ears', '🐱'], tophat: ['Top Hat', '🎩'], viking: ['Viking Helmet', '🪖'], crown: ['Crown', '👑'], halo: ['Halo', '😇'] };
   QB.TOYS = { lolly: ['Lollipop Tree', '🍭'], trampoline: ['Trampoline', '🤸'], jelly: ['Jelly Pool', '🍮'], rainbow: ['Rainbow', '🌈'],
     discoball: ['Disco Ball', '🪩'], house: ['Cupcake House', '🧁'] };
+  Object.assign(QB.HATS, { pumpkin: ['Pumpkin Head', '🎃'], witch: ['Witch Hat', '🧙'], santa: ['Santa Hat', '🎅'], antlers: ['Reindeer Antlers', '🦌'],
+    bunny: ['Bunny Ears', '🐰'], sunhat: ['Sun Hat', '👒'] });
+  QB.season = function (d) {
+    d = d || new Date(); var m = d.getMonth() + 1, day = d.getDate();
+    if ((m === 10 && day >= 15) || (m === 11 && day <= 3)) return 'halloween';
+    if (m === 12 || m === 1) return 'winter';
+    if (m === 3 || m === 4) return 'spring';
+    if (m >= 6 && m <= 8) return 'summer';
+    return '';
+  };
+  QB.isNight = function () { var h = new Date().getHours(); return h >= 20 || h < 7; };
   QB.SUPPLIES = { potion: ['Love Potion', '🧪', 'Fills one cube\'s heart to the top.'], whistle: ['Wake-Up Whistle', '📯', 'Wakes a resting cube right away.'] };
   QB.COLORS = [['#ff5fa2', 'Bubblegum'], ['#f0428c', 'Pink Fizz'], ['#ff9cc8', 'Cotton Candy'], ['#ff3b3b', 'Cherry Bomb'], ['#ff8a3d', 'Tangerine'],
     ['#ffb36b', 'Peach Pie'], ['#ffd23f', 'Lemon Zing'], ['#fff07a', 'Banana Split'], ['#b6e84a', 'Lime Fizz'], ['#4cd964', 'Slime'], ['#19bfae', 'Minty'],
@@ -731,6 +742,7 @@
     else if (name === 'pop') tone('sine', 500, 1200, .1, .14);
     else if (name === 'baby') { [523, 659, 784, 659, 1047].forEach(function (f, i) { tone('triangle', f, f, .2, .12, i * .13); }); }
     else if (name === 'chat') tone('sine', 900, 1300, .08, .08);
+    else if (name === 'snap') { tone('square', 1800, 900, .05, .06); tone('square', 1200, 600, .06, .05, .07); }
   };
 
   QB.confetti = function (n) {
@@ -958,6 +970,35 @@
       m = mat(T, '#ffd23f', { metalness: .15, roughness: .3, emissive: '#7a5200', emissiveIntensity: .35 });
       add(new T.CylinderGeometry(.26, .26, .14, 28, 1, true), m, 0, .07, 0).material.side = T.DoubleSide;
       for (var j = 0; j < 6; j++) { var a = j / 6 * 6.283; add(new T.ConeGeometry(.06, .16, 10), m, Math.cos(a) * .24, .2, Math.sin(a) * .24); add(new T.SphereGeometry(.035, 10, 8), mat(T, j % 2 ? '#ff3b7a' : '#34d6c4'), Math.cos(a) * .262, .07, Math.sin(a) * .262); }
+    } else if (key === 'pumpkin') {
+      m = mat(T, '#ff8a1f');
+      for (var pk = 0; pk < 6; pk++) { var seg = add(new T.SphereGeometry(.2, 16, 12), m, Math.cos(pk / 6 * 6.283) * .1, .2, Math.sin(pk / 6 * 6.283) * .1); seg.scale.set(.8, 1, .8); }
+      add(new T.CylinderGeometry(.03, .045, .14, 8), mat(T, '#4c8a2a'), 0, .42, 0).rotation.z = .3;
+      var face = new T.Sprite(sprite(T, '😈')); face.scale.set(.22, .22, .22); face.position.set(0, .22, .27); g.add(face);
+    } else if (key === 'witch') {
+      add(new T.CylinderGeometry(.36, .36, .03, 32), mat(T, '#2a1f3d'), 0, .015, 0);
+      var wc = add(new T.ConeGeometry(.2, .6, 24), mat(T, '#2a1f3d'), 0, .32, 0); wc.rotation.z = -.25;
+      add(new T.CylinderGeometry(.205, .205, .07, 24), mat(T, '#a07bff'), 0, .06, 0);
+    } else if (key === 'santa') {
+      var sc = add(new T.ConeGeometry(.23, .5, 24), mat(T, '#e8303a'), .04, .27, 0); sc.rotation.z = -.35;
+      add(new T.TorusGeometry(.23, .06, 10, 28), mat(T, '#ffffff', { roughness: .9 }), 0, .04, 0).rotation.x = Math.PI / 2;
+      add(new T.SphereGeometry(.08, 12, 10), mat(T, '#ffffff', { roughness: .9 }), .2, .48, 0);
+    } else if (key === 'antlers') {
+      m = mat(T, '#8b5a3c');
+      [-1, 1].forEach(function (s2) {
+        var b1 = add(new T.CylinderGeometry(.025, .035, .36, 8), m, s2 * .2, .17, 0); b1.rotation.z = -s2 * .4;
+        var b2 = add(new T.CylinderGeometry(.02, .025, .16, 8), m, s2 * .3, .26, 0); b2.rotation.z = s2 * .6;
+      });
+      add(new T.SphereGeometry(.07, 12, 10), mat(T, '#ff2b2b', { emissive: '#ff0000', emissiveIntensity: .4 }), 0, -.38, .47);
+    } else if (key === 'bunny') {
+      [-1, 1].forEach(function (s3) {
+        var ear = add(new T.SphereGeometry(.09, 14, 12), mat(T, '#ffffff'), s3 * .14, .26, 0); ear.scale.set(.8, 2.6, .5); ear.rotation.z = -s3 * .15;
+        var inn = add(new T.SphereGeometry(.05, 12, 10), mat(T, '#ffb3d0'), s3 * .14, .26, .03); inn.scale.set(.8, 3.2, .4); inn.rotation.z = -s3 * .15;
+      });
+    } else if (key === 'sunhat') {
+      add(new T.CylinderGeometry(.48, .48, .03, 36), mat(T, '#f5d27a', { roughness: .9 }), 0, .015, 0);
+      add(new T.SphereGeometry(.22, 20, 12, 0, 6.283, 0, Math.PI / 2), mat(T, '#f5d27a', { roughness: .9 }), 0, .02, 0);
+      add(new T.CylinderGeometry(.225, .225, .06, 24), mat(T, '#ff5fa2'), 0, .05, 0);
     } else if (key === 'halo') {
       var halo = add(new T.TorusGeometry(.26, .04, 12, 36), mat(T, '#ffe36b', { emissive: '#ffd23f', emissiveIntensity: .8 }), 0, .32, 0);
       halo.rotation.x = Math.PI / 2; g.userData.bob = halo;
@@ -971,9 +1012,11 @@
     var T = window.THREE, self = this;
     this.T = T; this.opts = opts = opts || {};
     this.kind = opts.kind || 'hero';
-    this.W = opts.w || 1; this.D = opts.d || 1; this.tile = 1;
+    this.W = opts.w || (this.kind === 'hero' ? 5 : 1); this.D = opts.d || (this.kind === 'hero' ? 5 : 1); this.tile = 1;
+    this.blockedTiles = {}; this.nextIdle = 2;
     this.actors = {}; this.anims = []; this.parts = []; this.tags = true;
     container.classList.add('qb-stage');
+    QB.lastStage = this;   // handy for tests and the console
     this.el = container;
     var r = this.renderer = new T.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: !!opts.keep });
     r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
@@ -998,6 +1041,11 @@
     this._input();
     this._loop = function () { if (self.dead) return; self.raf = requestAnimationFrame(self._loop); self.frame(); };
     this.raf = requestAnimationFrame(this._loop);
+    if (opts.snap) {
+      var snap = document.createElement('button'); snap.type = 'button'; snap.className = 'qb-sound qb-snap'; snap.setAttribute('aria-label', 'Take a photo'); snap.textContent = '📸';
+      snap.addEventListener('click', function (e) { e.stopPropagation(); self.snapshot(); });
+      container.appendChild(snap);
+    }
     if (opts.sound !== false) {
       var sb = document.createElement('button'); sb.type = 'button'; sb.className = 'qb-sound'; sb.setAttribute('aria-label', 'Sound on or off');
       var paint = function () { sb.textContent = QB.muted() ? '🔇' : '🔊'; }; paint();
@@ -1016,8 +1064,8 @@
   };
   Stage.prototype.placeCamera = function (snap) {
     var a = this.aspect || 1, c = this.camera;
-    if (this.kind === 'hero') { var d = (a < 0.9 ? 6.1 : 4.9) * (this.opts.dist || 1); this.camGoal.set(0, d * .52, d); this.look.set(0, .42, 0); }
-    else if (this.kind === 'cubby') { var span = Math.max(this.W, this.D / Math.max(a, .6) * 1.25), dd = span * 1.02 + 1.6; this.camGoal.set(0, dd * .85, dd * .78); this.look.set(0, 0, .3); }
+    if (this.kind === 'hero') { var d = (a < 0.9 ? 7.2 : 5.9) * (this.opts.dist || 1); this.heroD = d; this.camGoal.set(0, d * .58, d); this.look.set(0, .3, 0); }
+    else if (this.kind === 'cubby') { var span = Math.max(this.W, this.D / Math.max(a, .6) * 1.25), dd = Math.max(span * 1.02 + 1.6, (this.W / 2 + .7) / (Math.tan(this.camera.fov * Math.PI / 360) * a) / 1.154); this.camGoal.set(0, dd * .85, dd * .78); this.look.set(0, 0, .3); }
     else if (this.kind === 'world') { var z = (a < 0.9 ? 13.5 : 11.5) * this.zoom, tg = this.follow || new this.T.Vector3(); this.camGoal.set(tg.x, z * .95, tg.z + z * .8); this.look.set(tg.x, 0, tg.z - .5); }
     if (snap) { c.position.copy(this.camGoal); c.lookAt(this.look); }
   };
@@ -1041,7 +1089,18 @@
     Object.keys(this.actors).forEach(function (k) { self.actors[k].tick(dt, now); });
     if (this.onFrame) this.onFrame(dt);
     if (this.kind === 'world' && this.follow) this.placeCamera(false);
-    if (this.kind === 'hero') { var sw = Math.sin(this.time * .35) * .5; this.camGoal.x = sw; }
+    if (this.kind === 'hero') {   // gently follow the cube around the mat
+      var first = this.actors[Object.keys(this.actors)[0]], fx = first ? first.root.position.x : 0, fz = first ? first.root.position.z : 0;
+      this.camGoal.x = Math.sin(this.time * .35) * .5 + fx * .45; this.camGoal.z = (this.heroD || 5) + fz * .4;
+      this.look.x += (fx * .55 - this.look.x) * .06; this.look.z += (fz * .5 - this.look.z) * .06;
+    }
+    if (this.opts.idle && this.time > this.nextIdle) {   // cubes do little things on their own
+      this.nextIdle = this.time + 1.4 + Math.random() * 2.2;
+      var idle = Object.keys(this.actors).map(function (k) { return self.actors[k]; }).filter(function (x) { return !x.selected && !x.busy && !x.rolling && !x.waiting; });
+      if (idle.length) pick(idle).idle();
+    }
+    if (this.egg) { this.egg.position.y = Math.sin(this.time * 3) * .1; this.egg.children[1].rotation.z += dt * 2; }
+    if (this.weather) this.weather(dt);
     this.camera.position.lerp(this.camGoal, this.kind === 'world' ? .08 : .06);
     this.camera.lookAt(this.look);
     this.renderer.render(this.scene, this.camera);
@@ -1081,6 +1140,85 @@
   Stage.prototype.updateOverlay = function () {
     var kids = this.overlay.children;
     for (var i = 0; i < kids.length; i++) this.place(kids[i]);
+  };
+  /* Can a cube stand on tile x, z? (inside the mat / map, not a prop, nobody else there) */
+  Stage.prototype.free = function (x, z, except) {
+    if (x < 0 || z < 0 || x >= this.W || z >= this.D) return false;
+    if (this.kind === 'hero') { var c = this.tileToWorld(x, z); if (Math.sqrt(c.x * c.x + c.z * c.z) > 2.05) return false; }
+    if (this.blockedTiles[x + ',' + z]) return false;
+    var self = this;
+    return !Object.keys(this.actors).some(function (k) { var o = self.actors[k]; return o !== except && o.d.x === x && o.d.z === z; });
+  };
+  /* Tapping a cube pushes it: it tumbles away from where the finger touched it. */
+  Stage.prototype.pushDir = function (a, e) {
+    if (!e) return pick(['N', 'S', 'E', 'W']);
+    var s = this.screen(a.root.position), r = this.el.getBoundingClientRect();
+    var dx = e.clientX - r.left - s.x, dy = e.clientY - r.top - s.y;
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return pick(['N', 'S', 'E', 'W']);
+    return Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'W' : 'E') : (dy > 0 ? 'N' : 'S');
+  };
+  Stage.prototype.snapshot = function () {
+    this.renderer.render(this.scene, this.camera);
+    var url = this.renderer.domElement.toDataURL('image/png');
+    var a = document.createElement('a'); a.href = url; a.download = 'quickybricks-' + new Date().toISOString().slice(0, 10) + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    var f = document.createElement('div'); f.style.cssText = 'position:absolute;inset:0;background:#fff;opacity:.9;transition:opacity .5s;pointer-events:none;z-index:5';
+    this.el.appendChild(f); setTimeout(function () { f.style.opacity = 0; }, 30); setTimeout(function () { f.remove(); }, 600);
+    QB.sfx('snap'); UI.toast('📸 Snap! Saved to your downloads.', 'ok');
+  };
+  /* The Surprise Egg in the World: {x, z} or null */
+  Stage.prototype.setEgg = function (pos) {
+    var T = this.T;
+    if (!pos) { if (this.eggG) { this.scene.remove(this.eggG); this.eggG = null; this.egg = null; } return; }
+    if (!this.eggG) {
+      var g = this.eggG = new T.Group(), inner = this.egg = new T.Group();
+      var s = new T.Sprite(sprite(T, '🥚')); s.scale.set(.75, .75, .75); s.position.y = .55; inner.add(s);
+      var ring = new T.Mesh(new T.TorusGeometry(.42, .05, 8, 32), mat(T, '#ffd23f', { emissive: '#ffb000', emissiveIntensity: .9 }));
+      ring.rotation.x = -Math.PI / 2; ring.position.y = .06; inner.add(ring);
+      var glow = new T.Sprite(sprite(T, '✨')); glow.scale.set(.5, .5, .5); glow.position.set(.3, 1, 0); inner.add(glow);
+      g.add(inner); this.scene.add(g);
+    }
+    var c = this.tileToWorld(pos.x, pos.z); this.eggG.position.set(c.x, 0, c.z); this.eggPos = pos;
+  };
+  /* Seasonal decorations around the edge (no tiles) and weather. */
+  Stage.prototype.decorate = function (season) {
+    var T = this.T, self = this, set = { halloween: ['🎃', '🎃', '👻', '🕸️'], winter: ['⛄', '🎄', '🎁', '❄️'], spring: ['🌷', '🌸', '🐣', '🌼'], summer: ['🌴', '⛱️', '🍉', '🌻'] }[season];
+    if (!set) return;
+    var R = this.kind === 'world' ? Math.max(this.W, this.D) * .62 : Math.max(this.W, this.D) * .62 + .6, n = this.kind === 'world' ? 16 : 7;
+    for (var i = 0; i < n; i++) {
+      var a = i / n * 6.283 + .2, s = new T.Sprite(sprite(T, set[i % set.length]));
+      var sz = this.kind === 'world' ? 1.3 : .8; s.scale.set(sz, sz, sz);
+      s.position.set(Math.cos(a) * R, sz / 2 - .1, Math.sin(a) * R * (this.kind === 'world' ? 1 : .8));
+      this.scene.add(s);
+    }
+    var flyers = [], ch = { halloween: '🦇', winter: '❄️', spring: '🦋', summer: '🦋' }[season];
+    var count = season === 'winter' ? 60 : 8;
+    for (var j = 0; j < count; j++) {
+      var f = new T.Sprite(sprite(T, ch)); var z = season === 'winter' ? .25 : .55; f.scale.set(z, z, z);
+      f.userData = { a: Math.random() * 6.283, r: 2 + Math.random() * this.W * .45, h: 2 + Math.random() * 4, sp: .3 + Math.random() * .5 };
+      f.position.set((Math.random() - .5) * this.W * 1.2, Math.random() * 9, (Math.random() - .5) * this.D * 1.2);
+      this.scene.add(f); flyers.push(f);
+    }
+    this.weather = function (dt) {
+      flyers.forEach(function (f) {
+        var u = f.userData;
+        if (season === 'winter') { f.position.y -= dt * (.6 + u.sp); f.position.x += Math.sin(self.time + u.a) * dt * .3; if (f.position.y < 0) f.position.y = 9; }
+        else { u.a += dt * u.sp; f.position.set(Math.cos(u.a) * u.r, u.h + Math.sin(self.time * 3 + u.a) * .3, Math.sin(u.a) * u.r * .7); }
+      });
+    };
+  };
+  Stage.prototype.setNight = function () {
+    var T = this.T;
+    this.night = true;
+    this.scene.children.forEach(function (o) { if (o.isHemisphereLight) { o.intensity = .6; o.color.set('#9fa8ff'); } });
+    this.sun.intensity = .9; this.sun.color.set('#c3ccff');
+    if (this.sunSprite) this.sunSprite.material = sprite(T, '🌙');
+    var g = new T.BufferGeometry(), pts = [];
+    for (var i = 0; i < 400; i++) { var a = Math.random() * 6.283, e = .15 + Math.random() * 1.2, r = 70; pts.push(Math.cos(a) * Math.cos(e) * r, Math.sin(e) * r, Math.sin(a) * Math.cos(e) * r - 20); }
+    g.setAttribute('position', new T.Float32BufferAttribute(pts, 3));
+    this.scene.add(new T.Points(g, new T.PointsMaterial({ color: '#ffffff', size: .5 })));
+    if (this.sea) this.sea.material.color.set('#3b4c9a');
+    this.el.classList.add('qb-night');
   };
   Stage.prototype.add = function (d) {
     var a = new Actor(this, d); this.actors[d.id] = a; return a;
@@ -1161,7 +1299,10 @@
     var sea = new T.Mesh(new T.CircleGeometry(W * 3, 64), mat(T, '#7fd3ff', { roughness: .2 }));
     sea.rotation.x = -Math.PI / 2; sea.position.y = -.6; this.scene.add(sea);
     this.sea = sea;
-    (props || []).forEach(function (p) { var c = self.tileToWorld(p.x + (p.w - 1) / 2, p.z + (p.d - 1) / 2); self.prop(p, c.x, c.z); });
+    (props || []).forEach(function (p) {
+      var c = self.tileToWorld(p.x + (p.w - 1) / 2, p.z + (p.d - 1) / 2); self.prop(p, c.x, c.z);
+      for (var dx = 0; dx < p.w; dx++) for (var dz = 0; dz < p.d; dz++) self.blockedTiles[(p.x + dx) + ',' + (p.z + dz)] = 1;
+    });
     // sky things (no tiles): clouds, a smiling sun, a rainbow
     for (var i = 0; i < 7; i++) {
       var cl = new T.Group(); var cm = mat(T, '#ffffff', { roughness: .9 });
@@ -1169,7 +1310,7 @@
       cl.position.set((Math.random() - .5) * W * 1.6, 7 + Math.random() * 3, -D * .2 - Math.random() * D * .9); cl.userData.drift = .2 + Math.random() * .3;
       this.scene.add(cl); (this.clouds = this.clouds || []).push(cl);
     }
-    var sunS = new T.Sprite(sprite(T, '🌞')); sunS.scale.set(4, 4, 4); sunS.position.set(W * .45, 11, -D * .9); this.scene.add(sunS);
+    var sunS = this.sunSprite = new T.Sprite(sprite(T, '🌞')); sunS.scale.set(4, 4, 4); sunS.position.set(W * .45, 11, -D * .9); this.scene.add(sunS);
     var cols = ['#ff5f5f', '#ff9a3d', '#ffd23f', '#4cd964', '#6cc6ff', '#a07bff'];
     cols.forEach(function (c, k) { var rb = new T.Mesh(new T.TorusGeometry(W * .55 - k * .45, .22, 10, 64, Math.PI), mat(T, c, { roughness: .6 })); rb.position.set(-W * .15, -.4, -D * .78); self.scene.add(rb); });
   };
@@ -1394,6 +1535,27 @@
       self.root.position.x = s.x + (t.x - s.x) * p; self.root.position.z = s.z + (t.z - s.z) * p; self.root.position.y = h + Math.sin(p * Math.PI) * 1.2;
     }, function () { self.root.position.y = h; if (o) self.setOrient(o); });
   };
+  Actor.prototype.face = function (eyes, mouth, ms) {
+    var self = this; this.expr = [eyes, mouth]; this.repaint();
+    clearTimeout(this._exT); this._exT = setTimeout(function () { self.expr = null; self.repaint(); }, ms || 1200);
+  };
+  /* A little thing a cube does on its own (Cubby, World): hop, wiggle, yawn, giggle, look around, spin, blow a kiss. */
+  Actor.prototype.idle = function () {
+    var st = this.stage, self = this, top = this.root.position.clone(), kind = pick(['hop', 'wiggle', 'yawn', 'giggle', 'look', 'spin', 'kiss']);
+    top.y += this.size * .7;
+    this.busy = true;
+    var end = function () { self.busy = false; self.squash.position.y = 0; self.squash.rotation.set(0, 0, 0); };
+    if (kind === 'hop') st.anim(520, function (p) { self.squash.position.y = Math.abs(Math.sin(p * Math.PI * 2)) * .28; }, end);
+    else if (kind === 'wiggle') st.anim(600, function (p) { self.squash.rotation.z = Math.sin(p * Math.PI * 4) * .12; }, end);
+    else if (kind === 'spin') st.anim(700, function (p) { self.squash.rotation.y = (p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2) * Math.PI * 2; }, end);
+    else {
+      if (kind === 'yawn') { this.face(3, 3, 1500); st.burst(top, '💤', 2, { up: .8, g: -.3, speed: .2, life: 1.6 }); }
+      else if (kind === 'giggle') { this.face(2, 1, 1200); st.burst(top, ['🎵', '🎶'], 2, { up: 1, g: 0, speed: .3 }); }
+      else if (kind === 'kiss') { this.face(2, 8, 1200); st.burst(top, '💕', 2, { up: .9, g: 0, speed: .4 }); }
+      else { this.look.vx += (Math.random() - .5) * 8; this.look.vy += (Math.random() - .5) * 5; }
+      setTimeout(end, 500);
+    }
+  };
   Actor.prototype.express = function (ev, ms) {
     var self = this; this.expr = EXPR[ev] || null; this.repaint();
     clearTimeout(this._exT); this._exT = setTimeout(function () { self.expr = null; self.repaint(); }, ms || 1600);
@@ -1479,6 +1641,24 @@
 
   /* ------------------------------------------------------------------ rolling controller
      QB.roller(stage, {where, guest, blocked(actor, dir), getActor(), onResult(actor, res)}) -> roll(dir) */
+  /* Bonus things a roll can bring (Rainbow Roll, Surprise Egg) and finished quests. */
+  QB.extras = function (stage, a, res) {
+    var rw = res.reward || {}, top = a.root.position.clone(); top.y += a.size;
+    if (rw.rainbow) setTimeout(function () { stage.pop(a, 'RAINBOW ROLL!', '', '#ff5fa2'); stage.burst(top, ['🌈', '✨', '⭐'], 18, { up: 3 }); QB.sfx('golden'); QB.confetti(70); }, 1100);
+    if (rw.egg) setTimeout(function () {
+      stage.pop(a, 'SURPRISE EGG!', '', '#ffd23f'); stage.burst(top, ['🐣', '✨', '🎉'], 14, { up: 3 }); QB.confetti(110); QB.sfx('baby');
+      UI.toast('🥚 Surprise Egg! +' + rw.egg.sparkles + ' sparkles' + (rw.egg.hat && QB.HATS[rw.egg.hat] ? ' and a free ' + QB.HATS[rw.egg.hat][0] + '!' : '!'), 'ok');
+    }, 500);
+    QB.questToasts(res);
+  };
+  QB.questToasts = function (res) {
+    ((res && res.quests_done) || []).forEach(function (t, i) { setTimeout(function () { UI.toast('✅ Quest done: ' + t + '! Claim it in your Cubby.', 'ok'); QB.sfx('sunny'); }, 1200 + i * 700); });
+  };
+  QB.rainbowHtml = function (recent) {
+    var have = String(recent || '');
+    return '<div class="qb-rainbow" title="Rainbow Roll: land all six sides in six rolls">' + QB.FACE_EVENT.map(function (k, i) {
+      return '<span class="' + (have.indexOf(String(i)) >= 0 ? 'on' : '') + '">' + QB.EVENTS[k].emoji + '</span>'; }).join('') + '</div>';
+  };
   QB.roller = function (stage, o) {
     var queue = null;
     function go(dir) {
@@ -1486,7 +1666,8 @@
       if (!a) { if (o.noActor) o.noActor(); return; }
       if (a.rolling || a.busy || a.waiting) { queue = dir; return; }
       var move = o.move != null ? o.move : o.where === 'world';
-      if (move && o.blocked && o.blocked(a, dir)) { a.bonk(dir); return; }
+      var dv = QB.DIRS[dir];
+      if (move && (o.blocked ? o.blocked(a, dir) : !stage.free(a.d.x + dv[0], a.d.z + dv[1], a))) { a.bonk(dir); return; }
       var before = { orient: a.d.orient, x: a.d.x, z: a.d.z };
       var ev = null, res = null, rolled = false, server = null;
       a.waiting = true;
@@ -1500,6 +1681,7 @@
           if (res.cube && o.onResult) o.onResult(a, res);
         } else {
           a.play(ev, res ? res.reward : QB.guestReward(ev));
+          if (res) QB.extras(stage, a, res);
           if (o.onResult) o.onResult(a, res || { ok: true, event: ev, reward: QB.guestReward(ev), guest: true });
         }
         if (queue) { var q = queue; queue = null; setTimeout(function () { go(q); }, a.busy ? 900 : 60); }
@@ -1780,7 +1962,7 @@
       var hint = !c.grown ? '🍼 Baby! Roll ' + c.grow_left + ' more time' + (c.grow_left === 1 ? '' : 's') + ' to grow up.'
         : c.love >= 100 ? '💖 Full of love! Take it to the World to hold hands.' : 'Roll to land the 💖 heart side on top!';
       box.innerHTML = QB.thumbHtml(c, 96) + '<h2>' + esc(c.name) + '</h2><div class="meta">' + esc(c.color_name) + ' · Gen ' + c.gen + (c.in_world ? ' · 🏝️ in the World' : '') + '</div>' +
-        QB.loveBar(c.love) + '<p class="hint">' + esc(hint) + '</p>' +
+        QB.loveBar(c.love) + QB.rainbowHtml(c.recent) + '<p class="hint">' + esc(hint) + '</p>' +
         '<div class="ui-row" style="justify-content:center"><a class="ui-btn sm" href="#cube/' + esc(c.id) + '" data-go="cube/' + esc(c.id) + '">🪪 Card</a>' +
         '<button class="ui-btn sm mint" data-world>' + (c.in_world ? '🏠 Bring home' : '🏝️ To the World') + '</button></div>';
       QB.hydrate(box);
@@ -1792,6 +1974,29 @@
           return '<button type="button" class="cb-cube' + (sel && sel.d.id === c.id ? ' on' : '') + '" data-pick="' + esc(c.id) + '">' + QB.thumbHtml(c, 74) +
             '<b>' + esc(c.name) + '</b><small>' + (c.grown ? 'Gen ' + c.gen : '🍼 baby') + (c.in_world ? ' · 🏝️' : '') + (c.nap ? ' · 💤' : '') + '</small></button>';
         }).join('');
+    }
+    function questsHtml() {
+      var q = data.quests;
+      if (!q) return '';
+      return '<div class="cb-quests">' + q.list.map(function (it) {
+        var ev = QB.EVENTS[it.key], em = it.claimed ? '✅' : it.done ? '🎉' : ev ? ev.emoji : { roll: '🎲', world_roll: '🏝️', chat: '💬', hands: '🤝', doodle: '✏️', hat: '🎩', egg: '🥚', rainbow: '🌈' }[it.key] || '⭐';
+        return '<div class="cb-q' + (it.claimed ? ' claimed' : '') + '"><span class="em">' + em + '</span><div><b>' + esc(it.text) + '</b>' +
+          '<div class="bar"><i style="width:' + Math.round(it.progress / it.goal * 100) + '%"></i></div><small class="muted" style="font-weight:800">' + it.progress + ' / ' + it.goal + '</small></div>' +
+          (it.claimed ? '<span class="ui-badge good">Got it!</span>' : '<button class="ui-btn sm ' + (it.done ? 'lemon' : '') + '" data-claim="' + it.key + '"' + (it.done ? '' : ' disabled') + '>✨ ' + it.sparkles + '</button>') + '</div>';
+      }).join('') + '<div class="cb-chest' + (q.chest_ready ? ' ready' : '') + '"><span>🧰 ' + (q.chest ? 'Chest opened! New quests tomorrow.' : 'Finish all three for a bonus chest: +' + q.chest_sparkles + ' ✨') + '</span>' +
+        (q.chest ? '' : '<button class="ui-btn sm primary" data-chest' + (q.chest_ready ? '' : ' disabled') + '>Open chest</button>') + '</div></div>';
+    }
+    function drawQuests() { var b = view.querySelector('[data-quests]'); if (b) b.innerHTML = questsHtml(); }
+    function surprises() {
+      var list = data.surprises || [];
+      if (!list.length) return;
+      var b = list[0], par = b.parents || [];
+      var m = UI.modal('<div class="cb-surprise"><div class="eyebrow">Surprise! 🎁</div><h2 style="padding:0">A baby arrived while you were away!</h2>' + QB.thumbHtml(b, 140) +
+        '<p style="font-weight:800">Meet <b>' + esc(b.name) + '</b>!' + (par.length === 2 ? ' ' + esc(par[0].name) + ' (' + esc(par[0].owner) + ') held hands with your ' + esc(par[1].name) + '.' : '') + '</p>' +
+        (list.length > 1 ? '<p class="muted" style="font-weight:700">…and ' + (list.length - 1) + ' more baby cube' + (list.length > 2 ? 's' : '') + '!</p>' : '') +
+        '<div class="ui-row" style="justify-content:center"><button class="ui-btn primary" data-close>Hooray! 🎉</button></div></div>');
+      QB.hydrate(m.el); QB.confetti(120); QB.sfx('baby');
+      UI.apiQuiet('mark_seen', list.map(function (x) { return x.id; })).then(function () { data.surprises = []; }, function () {});
     }
     function drawList() { var l = view.querySelector('[data-list]'); if (l) { l.innerHTML = listHtml(); QB.hydrate(l); } }
     function chips() {
@@ -1820,6 +2025,7 @@
         (empty ? '<div class="ui-empty"><div style="font-size:3rem">🧊</div><h3>Your Cubby is empty!</h3><p style="font-weight:700">Make your very first cube: pick a colour, eyes, a mouth, and doodle a face.</p>' +
           '<a class="ui-btn primary lg" href="#make" data-go="make">Make my first cube ✨</a></div>'
           : '<div class="cb-play"><div class="cb-stage" data-stage></div><div class="cb-side"><div class="ui-card cb-sel" data-sel></div><div class="cb-pad" data-pad></div></div></div>') +
+        '<div class="cb-sec"><h2>Today\'s quests</h2><div data-quests>' + questsHtml() + '</div></div>' +
         '<div class="cb-sec"><h2>My cubes <span class="ui-badge brand">' + data.cubes.length + '</span></h2><div class="cb-list" data-list>' + listHtml() + '</div></div>' +
         (data.happenings.length ? '<div class="cb-sec"><h2>Meanwhile in the World</h2><div class="cb-news">' + data.happenings.map(function (h) {
           return '<div><i style="background:' + esc((h.data && h.data.color) || '#ff5fa2') + '"></i><span>' + esc(h.text) + '</span><span class="ui-spacer"></span><small class="muted">' + esc(UI.ago(h.at)) + '</small></div>';
@@ -1832,7 +2038,8 @@
       if (!QB.glOK()) { view.querySelector('[data-stage]').innerHTML = '<div class="qb-nogl">Your browser can\'t show 3D. Your cubes are below!</div>'; return Promise.resolve(); }
       return QB.three().then(function () {
         if (!alive) return;
-        stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'cubby', w: MAT_W, d: MAT_D });
+        stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'cubby', w: MAT_W, d: MAT_D, idle: true, snap: true });
+        if (QB.season()) stage.decorate(QB.season());
         stage.cubbyGround(data.me.inventory.toys);
         var pos = positions(), taken = {};
         onMat().forEach(function (c) {
@@ -1854,12 +2061,17 @@
             savePos();
             if (!res || res.ok === false || !res.cube) return;
             var c = data.cubes.filter(function (x) { return x.id === a.d.id; })[0];
-            if (c) { ['orient', 'love', 'rolls', 'grown', 'grow_left'].forEach(function (k) { c[k] = res.cube[k]; }); a.d.love = c.love; a.d.grown = c.grown; a.d.grow_left = c.grow_left; }
+            if (c) { ['orient', 'love', 'rolls', 'grown', 'grow_left', 'recent'].forEach(function (k) { c[k] = res.cube[k]; }); a.d.love = c.love; a.d.grown = c.grown; a.d.grow_left = c.grow_left; a.d.recent = c.recent; }
+            if (res.quests_done && res.quests_done.length) UI.apiQuiet('get_cubby').then(function (d2) { data.quests = d2.quests; drawQuests(); }, function () {});
             data.me.sparkles = res.sparkles; updateChips(); selCard();
             if (res.reward && res.reward.grew) { a.tag(esc(a.d.name), 'mine'); drawList(); }
           } });
         stage.onSwipe = function (d) { pad.hit(d); go(d); };
-        stage.onPick = function (a) { if (a) { select(a); a.express('love', 700); QB.sfx('pop'); } };
+        stage.onPick = function (a, e) {
+          if (!a) return;
+          if (a === sel) { var d = stage.pushDir(a, e); pad.hit(d); go(d); }   // tap the picked cube again: push it
+          else { select(a); a.express('love', 700); QB.sfx('pop'); }
+        };
         offKeys = QB.keys(function (d) { pad.hit(d); go(d); });
       });
     }
@@ -1882,6 +2094,20 @@
         var id = p.getAttribute('data-pick');
         if (stage && stage.actors[id]) { select(stage.actors[id]); stage.actors[id].express('love', 700); QB.sfx('pop'); }
         else UI.go('cube', id);
+        return;
+      }
+      var cl = e.target.closest('[data-claim]');
+      if (cl) {
+        UI.busy(cl, UI.api('claim_quest', cl.getAttribute('data-claim'))).then(function (r) {
+          data.quests = r.quests; data.me.sparkles = r.sparkles; drawQuests(); updateChips(); QB.confetti(50); QB.sfx('golden'); UI.toast('+' + r.amount + ' ✨ Quest complete!', 'ok');
+        });
+        return;
+      }
+      var ch = e.target.closest('[data-chest]');
+      if (ch) {
+        UI.busy(ch, UI.api('claim_chest')).then(function (r) {
+          data.quests = r.quests; data.me.sparkles = r.sparkles; drawQuests(); updateChips(); QB.confetti(160); QB.sfx('baby'); UI.toast('🧰 Bonus chest! +' + r.amount + ' ✨', 'ok');
+        });
         return;
       }
       if (e.target.closest('[data-gift]')) {
@@ -1908,7 +2134,7 @@
       return UI.api('get_cubby').then(function (d) {
         data = d;
         return adoptDraft().then(function (adopted) { return adopted ? UI.api('get_cubby').then(function (d2) { data = d2; }) : null; });
-      }).then(draw);
+      }).then(draw).then(function () { setTimeout(surprises, 600); });
     }
     return { ready: load(), destroy: function () { alive = false; if (offKeys) offKeys(); if (stage) stage.destroy(); } };
   });
@@ -1936,6 +2162,7 @@
         '<div class="cu-fact"><b>' + c.rolls + '</b><span>rolls</span></div><div class="cu-fact"><b>' + esc(UI.ago(c.born).replace(' ago', '')) + '</b><span>old</span></div>' +
         '<div class="cu-fact"><b>' + esc(QB.EYES[c.eyes]) + '</b><span>eyes</span></div><div class="cu-fact"><b>' + esc(QB.MOUTHS[c.mouth]) + '</b><span>mouth</span></div></div>' +
         '<p style="font-weight:800;margin:0 0 6px">' + esc(status) + ' · Love ' + c.love + '/100</p>' + QB.loveBar(c.love) +
+        (c.mine ? '<div class="cu-sec"><h3>Rainbow Roll</h3><p class="ui-hint" style="margin:-4px 0 8px">Land all six sides on top in six rolls for +30 ✨</p>' + QB.rainbowHtml(c.recent) + '</div>' : '') +
         (c.mine ? '<div class="cu-sec"><h3>Wardrobe</h3><div class="cu-hats" data-hats><button type="button" data-hat="" class="' + (c.hat ? '' : 'on') + '" title="No hat">🚫</button>' +
             inv.hats.map(function (h) { return '<button type="button" data-hat="' + h + '" class="' + (c.hat === h ? 'on' : '') + '" title="' + esc(QB.HATS[h][0]) + '">' + QB.HATS[h][1] + '</button>'; }).join('') +
             '</div>' + (inv.hats.length ? '' : '<p class="ui-hint">No hats yet. Get some in the <a href="#shop" data-go="shop">Sparkle Shop</a>!</p>') + '</div>' +
@@ -1950,35 +2177,66 @@
         (c.grandparents.length ? '<div class="cu-sec"><h3>Grandparents</h3>' + fam(c.grandparents) + '</div>' : '') +
         '<div class="cu-sec"><h3>Babies <span class="ui-badge">' + c.children_total + '</span></h3>' + (c.children.length ? fam(c.children) : '<p class="muted" style="font-weight:700">No babies yet.' + (c.mine ? ' Fill the heart, then hold hands in the World!' : '') + '</p>') + '</div>';
     }
+    /* A shareable PNG: grandparents, parents, the cube (big), its babies. */
+    function poster() {
+      var W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      var g = cv.getContext('2d');
+      function go() {
+        g.fillStyle = '#fff4e0'; g.fillRect(0, 0, W, H);
+        var cols = ['#ff5fa2', '#34d6c4', '#ffd23f', '#a07bff', '#6cc6ff'];
+        for (var i = 0; i < 160; i++) { g.fillStyle = cols[i % 5]; g.globalAlpha = .35; g.beginPath(); g.arc(Math.random() * W, Math.random() * H, 4 + Math.random() * 4, 0, 7); g.fill(); }
+        g.globalAlpha = 1; g.lineWidth = 14; g.strokeStyle = '#3b2a5a'; QB.rrect(g, 24, 24, W - 48, H - 48, 48); g.stroke();
+        g.textAlign = 'center'; g.fillStyle = '#3b2a5a'; g.font = '84px "Lilita One", sans-serif';
+        g.fillText('The ' + c.name + ' Family', W / 2, 140);
+        function cube(cd, x, y, px, label) {
+          var t = document.createElement('canvas'); t.width = t.height = px; QB.drawThumb(t, cd); g.drawImage(t, x - px / 2, y);
+          g.fillStyle = '#3b2a5a'; g.font = Math.round(px / 6.5 + 14) + 'px "Lilita One", sans-serif'; g.fillText(label, x, y + px + px / 6 + 8);
+        }
+        function row(list, y, px) { list.forEach(function (cd, i) { cube(cd, W / 2 + (i - (list.length - 1) / 2) * (px + 40), y, px, cd.name); }); }
+        function cap(t, y) { g.fillStyle = '#f0428c'; g.font = '34px "Lilita One", sans-serif'; g.fillText(t, W / 2, y); }
+        var y = 190;
+        if (c.grandparents.length) { cap('Grandparents', y + 20); row(c.grandparents.slice(0, 4), y + 40, 150); y += 270; }
+        if (c.parents.length) { cap('Parents', y + 20); row(c.parents, y + 40, 190); y += 310; }
+        cube(c, W / 2, y + 10, 340, c.name + (c.gen > 1 ? ' · Gen ' + c.gen : ''));
+        y += 450;
+        if (c.children.length && y < H - 200) { cap('Babies', y + 20); row(c.children.slice(0, 6), y + 40, Math.min(130, (W - 200) / Math.min(6, c.children.length) - 40)); }
+        g.fillStyle = '#6e5e8c'; g.font = '30px "Baloo 2", sans-serif'; g.fillText('Made with QuickyBricks · ' + new Date().toLocaleDateString(), W / 2, H - 60);
+        var a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = c.name.replace(/\W+/g, '-') + '-family.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        QB.confetti(40); UI.toast('🖼️ Poster saved to your downloads!', 'ok');
+      }
+      var im = c.drawing ? QB.img(c.drawing) : null;
+      if (im && !im.complete) im._wait.push(go); else go();
+    }
     function redraw() { var b = view.querySelector('[data-info]'); b.innerHTML = info(); }
 
     function draw() {
       view.innerHTML = '<div class="ui-wrap"><a class="ui-btn ghost sm" href="#cubby" data-go="cubby" style="margin-bottom:12px">' + UI.icon('back') + 'My Cubby</a>' +
         '<div class="cu"><div><div class="cu-stage" data-stage></div><div class="cu-under" data-under></div></div>' +
         '<div class="ui-card"><div data-info>' + info() + '</div></div></div>' +
-        '<div class="ui-card" style="margin-top:22px">' + family() + '</div></div>';
+        '<div class="ui-card" style="margin-top:22px"><div class="ui-row between"><h2 style="margin:0">Family tree</h2><button class="ui-btn sm lemon" data-poster>🖼️ Make a family poster</button></div>' + family() + '</div></div>';
       QB.hydrate(view);
       if (!QB.glOK()) { view.querySelector('[data-stage]').innerHTML = '<div class="qb-nogl">' + QB.thumbHtml(c, 150) + '</div>'; QB.hydrate(view); return Promise.resolve(); }
       return QB.three().then(function () {
         if (!alive) return;
         stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'hero', dist: c.grown ? .85 : .7 });
         stage.heroGround();
-        actor = stage.add(Object.assign({}, c, { x: 0, z: 0 }));
+        actor = stage.add(Object.assign({}, c, { x: 2, z: 2 }));
         if (c.mine) {
           var pad = QB.dpad(function (d) { pad.hit(d); go(d); }, true);
           view.querySelector('[data-under]').appendChild(pad);
           var t = document.createElement('p'); t.className = 'muted small'; t.style.fontWeight = 700; t.style.margin = 0; t.textContent = 'Roll ' + c.name + ' right here!';
           view.querySelector('[data-under]').appendChild(t);
-          go = QB.roller(stage, { where: 'home', move: false, getActor: function () { return actor; }, onResult: function (a, res) {
+          go = QB.roller(stage, { where: 'home', move: true, getActor: function () { return actor; }, onResult: function (a, res) {
             if (!res || res.ok === false || !res.cube) return;
-            ['orient', 'love', 'rolls', 'grown', 'grow_left'].forEach(function (k) { c[k] = res.cube[k]; });
+            ['orient', 'love', 'rolls', 'grown', 'grow_left', 'recent'].forEach(function (k) { c[k] = res.cube[k]; });
             if (me) me.sparkles = res.sparkles;
             redraw();
           } });
           stage.onSwipe = function (d) { pad.hit(d); go(d); };
           offKeys = QB.keys(function (d) { pad.hit(d); go(d); });
         }
-        stage.onPick = function (a) { if (a && !a.busy && !a.rolling) a.play('love', null); };
+        stage.onPick = function (a, e) { if (!a) return; if (c.mine && go) go(stage.pushDir(a, e)); else if (!a.busy && !a.rolling) a.play('love', null); };
       });
     }
 
@@ -2002,6 +2260,7 @@
         });
         return;
       }
+      if (e.target.closest('[data-poster]')) { poster(); return; }
       if (e.target.closest('[data-report]')) {
         var m = UI.modal('<h2>Report ' + esc(c.name) + '?</h2><p class="muted" style="font-weight:700">A grown-up moderator will take a look. Thanks for keeping QuickyBricks kind!</p>' +
           '<div class="ui-stack">' + [['drawing', '🎨 A rude drawing'], ['name', '🔤 A rude name'], ['other', '❓ Something else']].map(function (r) {
@@ -2041,7 +2300,7 @@
   function draft() {
     var d = UI.store.get('draft', null);
     if (!d || !d.color) d = { name: QB.randomName(), color: QB.pick(['#ff5fa2', '#34d6c4', '#ffd23f', '#a07bff', '#6cc6ff', '#ff8a3d']), eyes: 1, mouth: 0, drawing: '', orient: QB.START, sparkles: 0, rolls: 0 };
-    d.id = 'draft'; d.grown = true; d.x = 0; d.z = 0;
+    d.id = 'draft'; d.grown = true; d.x = 2; d.z = 2;
     return d;
   }
   function saveDraft(d) { UI.store.set('draft', { name: d.name, color: d.color, eyes: d.eyes, mouth: d.mouth, drawing: d.drawing || '', orient: d.orient, sparkles: d.sparkles || 0, rolls: d.rolls || 0 }); }
@@ -2067,6 +2326,7 @@
         '<div class="eyebrow">Squishy cubes · silly surprises</div><h1>' + C.title + '</h1><p class="lp-lead">' + esc(C.lead) + '</p>' +
         '<div class="lp-cta">' + primary + '</div>' +
         '<div class="lp-proof">' + C.proof.map(function (p) { return '<span class="ui-badge">' + esc(p) + '</span>'; }).join('') + '</div>' +
+        '<div class="lp-pulse" data-pulse></div>' +
       '</div><div class="lp-play">' +
         '<div class="lp-stage" data-stage></div>' +
         '<div class="lp-under"><div data-dpad></div><div class="lp-tune">' +
@@ -2077,7 +2337,7 @@
           '<div class="lp-namebar"><input type="text" maxlength="14" data-name aria-label="Cube name" value="' + esc(d.name) + '"><button type="button" class="ui-btn sm" data-dice aria-label="Random name">🎲</button></div>' +
         '</div></div>' +
         '<div class="lp-legend" data-legend>' + QB.FACE_EVENT.map(function (k) { return '<span data-ev="' + k + '">' + QB.EVENTS[k].emoji + ' ' + esc(QB.EVENTS[k].label.replace(/!$/, '')) + '</span>'; }).join('') + '</div>' +
-        '<div class="lp-keep"><span><b data-earn>Roll me with the arrows, your arrow keys, or a swipe!</b></span>' +
+        '<div class="lp-keep"><span><b data-earn>Tap me, swipe me, or use the arrows!</b></span>' +
           (me ? '<a class="ui-btn sm primary" href="#make" data-go="make">Make it for real</a>' : '<a class="ui-btn sm primary" href="#auth/signup" data-go="auth/signup">Keep this cube 💾</a>') + '</div>' +
       '</div></div></section>' +
       '<section class="lp-section" id="sides"><div class="ui-wrap"><div class="lp-head"><h2>Six sides, six silly surprises</h2><p>Every cube has a face and five picture sides. Whatever lands on top when it rolls... happens!</p></div>' +
@@ -2128,7 +2388,7 @@
         stage = new QB.Stage(host, { kind: 'hero' });
         stage.heroGround();
         actor = stage.add(d);
-        var go = QB.roller(stage, { guest: true, getActor: function () { return actor; }, onResult: function (a, res) {
+        var go = QB.roller(stage, { guest: true, move: true, getActor: function () { return actor; }, onResult: function (a, res) {
           d.orient = a.d.orient; d.sparkles = (d.sparkles || 0) + (res.reward.sparkles || 0); d.rolls = (d.rolls || 0) + 1; saveDraft(d);
           var leg = view.querySelector('[data-ev="' + res.event + '"]');
           if (leg) { leg.classList.add('hit'); setTimeout(function () { leg.classList.remove('hit'); }, 1400); }
@@ -2136,7 +2396,8 @@
         } });
         roll = function (dir) { dp.hit(dir); go(dir); };
         stage.onSwipe = roll;
-        stage.onPick = function (a) { if (a && !a.busy && !a.rolling) a.play(QB.pick(['love', 'sunny']), null); };
+        stage.onPick = function (a, e) { if (a) roll(stage.pushDir(a, e)); };
+        if (QB.season()) stage.decorate(QB.season());
         offKeys = QB.keys(roll, function () { var r = host.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; });
       }).catch(function (err) { console.error('3D', err && err.stack || err); host.innerHTML = '<div class="qb-nogl">The 3D cube couldn\'t load. Check your connection and refresh!</div>'; });
     } else {
@@ -2152,6 +2413,10 @@
       if (e.target.closest('[data-dice]')) { d.name = QB.randomName(); view.querySelector('[data-name]').value = d.name; changed(); return; }
       if (e.target.closest('[data-draw]')) { QB.drawModal(d, function (url) { d.drawing = url; changed(); }); }
     });
+    UI.apiQuiet('get_pulse').then(function (p) {
+      var el = view.querySelector('[data-pulse]'); if (!el) return;
+      el.innerHTML = '<span>🧊 <b>' + p.cubes.toLocaleString() + '</b> cubes so far</span><span>🍼 <b>' + p.babies_today + '</b> born today</span><span>🏝️ <b>' + p.in_world + '</b> playing in the World</span>';
+    }, function () {});
     view.querySelector('[data-name]').addEventListener('input', function (e) { d.name = e.target.value.slice(0, 14); saveDraft(d); });
     return { ready: ready, destroy: function () { alive = false; if (offKeys) offKeys(); if (stage) stage.destroy(); } };
   });
@@ -2198,7 +2463,7 @@
       var n = 0, step = function (t) { n++; return '<h3><span class="n">' + n + '</span>' + t + '</h3>'; };
       view.innerHTML = '<div class="ui-wrap"><div class="ui-page-head"><div><h1>' + (id ? 'Fix up ' + esc(cube.name) : 'Cube Maker') + '</h1>' +
         '<p class="muted" style="font-weight:700">' + (id ? 'Doodle a new face or change the name. Colour, eyes and mouth are how ' + esc(cube.name) + ' was born!' : 'You can make ' + left + ' more hand-made cube' + (left === 1 ? '' : 's') + '. Every choice shows up on the cube right away.') + '</p></div></div>' +
-        '<div class="mk"><div class="mk-preview"><div class="mk-stage" data-stage></div><p class="muted small" style="text-align:center;font-weight:700;margin-top:10px">Tap the cube to make it giggle!</p></div><div>' +
+        '<div class="mk"><div class="mk-preview"><div class="mk-stage" data-stage></div><p class="muted small" style="text-align:center;font-weight:700;margin-top:10px">Tap or swipe the cube to roll it around!</p></div><div>' +
         (id ? '' : '<div class="ui-card mk-step">' + step('Pick a colour') + '<div class="mk-colors">' + QB.COLORS.map(function (c) {
           return '<button type="button" data-color="' + c[0] + '" style="background:' + c[0] + '" title="' + esc(c[1]) + '" aria-label="' + esc(c[1]) + '"></button>'; }).join('') + '</div></div>' +
           '<div class="ui-card mk-step">' + step('Pick eyes') + '<div class="mk-opts" data-opts="eyes"></div></div>' +
@@ -2217,9 +2482,10 @@
         if (!alive) return;
         stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'hero', dist: .82 });
         stage.heroGround();
-        actor = stage.add(Object.assign({}, cube, { id: 'preview', orient: QB.START, grown: true }));
-        stage.onPick = function (a) { if (a && !a.busy) a.play(QB.pick(['love', 'sunny', 'boing']), null); };
-        stage.onSwipe = function (d) { if (actor && !actor.rolling && !actor.busy) actor.roll(d, false, function (o) { actor.play(QB.topEvent(o), null); }); };
+        actor = stage.add(Object.assign({}, cube, { id: 'preview', orient: QB.START, grown: true, x: 2, z: 2 }));
+        var spin = QB.roller(stage, { guest: true, move: true, getActor: function () { return actor; } });
+        stage.onPick = function (a, e) { if (a) spin(stage.pushDir(a, e)); };
+        stage.onSwipe = spin;
       });
     }
 
@@ -2305,8 +2571,9 @@
     function item(it, i) {
       var meta = it.kind === 'hat' ? QB.HATS[it.key] : it.kind === 'toy' ? QB.TOYS[it.key] : QB.SUPPLIES[it.key];
       var owned = it.kind === 'supply' ? false : it.owned, afford = data.sparkles >= it.price;
-      return '<div class="ui-card sh-item"><span class="em" style="background:' + BG[i % BG.length] + '">' + meta[1] + '</span><h3>' + esc(it.name) + '</h3>' +
-        '<p>' + (it.kind === 'hat' ? 'Any of your cubes can wear it' : it.kind === 'toy' ? 'Goes in your Cubby' : esc(meta[2]) + ' You have ' + it.owned + '.') + '</p>' +
+      return '<div class="ui-card sh-item' + (it.limited ? ' limited' : '') + '">' + (it.limited ? '<span class="ui-badge warn sh-lim">⏳ Limited time!</span>' : '') +
+        '<span class="em" style="background:' + BG[i % BG.length] + '">' + meta[1] + '</span><h3>' + esc(it.name) + '</h3>' +
+        '<p>' + (it.limited ? 'Only in the shop this time of year' : it.kind === 'hat' ? 'Any of your cubes can wear it' : it.kind === 'toy' ? 'Goes in your Cubby' : esc(meta[2]) + ' You have ' + it.owned + '.') + '</p>' +
         (owned ? '<span class="ui-badge good">✓ Yours!</span>' : '<button class="ui-btn sm ' + (afford ? 'lemon' : '') + '" data-buy="' + it.key + '"' + (afford ? '' : ' title="Not enough sparkles yet"') + '>✨ ' + it.price + '</button>') + '</div>';
     }
     function draw() {
@@ -2349,7 +2616,8 @@
     function mine() { return W ? W.cubes.filter(function (c) { return c.mine; }) : []; }
     function hud() {
       view.querySelector('[data-hud]').innerHTML = '<span class="qb-sparkles">✨ ' + W.me.sparkles + '</span><span class="ui-badge">🏝️ ' + W.cubes.length + ' cubes here</span>' +
-        '<button class="ui-btn sm mint" data-send-out>+ Send a cube (' + W.me.out + '/' + W.me.max_out + ')</button>';
+        '<button class="ui-btn sm mint" data-send-out>+ Send a cube (' + W.me.out + '/' + W.me.max_out + ')</button>' +
+        (W.egg ? '<button type="button" class="ui-badge wd-egg" data-egg>🥚 <span class="long">A Surprise Egg is hiding! </span>Find the egg!</button>' : '');
       var m = mine();
       view.querySelector('[data-mine]').innerHTML = m.map(function (c) {
         return '<button type="button" class="wd-me' + (sel && sel.d.id === c.id ? ' on' : '') + '" data-me="' + esc(c.id) + '">' + QB.thumbHtml(c, 42) + '<span class="grow"><b>' + esc(c.name) + '</b>' +
@@ -2401,6 +2669,7 @@
       });
       Object.keys(stage.actors).forEach(function (k) { if (!keep[k]) { if (sel && sel.d.id === k) select(null); stage.remove(k); } });
       needFaces(W.cubes);
+      stage.setEgg(W.egg);
       W.chats.slice().reverse().forEach(function (m) {
         if (seenChats[m.id]) return; seenChats[m.id] = 1;
         var a = m.cube && stage.actors[m.cube];
@@ -2449,7 +2718,7 @@
       QB.hydrate(md.el);
       var hb = md.el.querySelector('[data-hold]');
       hb.onclick = function () {
-        UI.busy(hb, UI.api('hold_hands', m.id, c.id)).then(function (r) { md.close(); celebrate(sel, a, r); });
+        UI.busy(hb, UI.api('hold_hands', m.id, c.id)).then(function (r) { md.close(); celebrate(sel, a, r); QB.questToasts(r); });
       };
     }
     function celebrate(ma, ta, r) {
@@ -2485,6 +2754,12 @@
       var b;
       if ((b = e.target.closest('[data-me]'))) { var a = stage && stage.actors[b.getAttribute('data-me')]; if (a) { select(a); a.express('love', 600); QB.sfx('pop'); } return; }
       if (e.target.closest('[data-send-out]')) { sendOut(); return; }
+      if (e.target.closest('[data-egg]') && stage && stage.eggG) {
+        var back = stage.follow; stage.follow = stage.eggG.position; QB.sfx('pop');
+        timers.push(setTimeout(function () { if (alive && stage) stage.follow = sel ? sel.root.position : back; }, 2200));
+        UI.toast('🥚 There it is! Roll one of your cubes onto it.');
+        return;
+      }
       if (e.target.closest('[data-emo]')) { var em = view.querySelector('[data-emojis]'); em.hidden = !em.hidden; return; }
       if ((b = e.target.closest('[data-e]'))) {
         var inp = view.querySelector('[name=t]'), cur = Array.from(inp.value);
@@ -2503,7 +2778,7 @@
       UI.apiQuiet('send_chat', t, sel ? sel.d.id : null).then(function (r) {
         inp.value = ''; chatWait = r.wait; chatTick(); view.querySelector('[data-emojis]').hidden = true;
         (r.chats || []).forEach(function (m) { if (!seenChats[m.id]) { seenChats[m.id] = 1; var a = m.cube && stage && stage.actors[m.cube]; if (a) a.say(m.text); view.querySelector('[data-log]').textContent = m.who + ': ' + m.text; } });
-        QB.sfx('chat');
+        QB.sfx('chat'); QB.questToasts(r);
       }, function (err) { if (err.result && err.result.wait) { chatWait = err.result.wait; chatTick(); } UI.toast(err.message, 'error'); });
     });
 
@@ -2516,8 +2791,10 @@
       if (!QB.glOK()) { view.querySelector('[data-stage]').innerHTML = '<div class="qb-nogl">Your browser can\'t show 3D, so the World can\'t open here. Try another browser!</div>'; return; }
       return QB.three().then(function () {
         if (!alive) return;
-        stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'world', w: w.w, d: w.d });
+        stage = new QB.Stage(view.querySelector('[data-stage]'), { kind: 'world', w: w.w, d: w.d, idle: true, snap: true });
         stage.worldGround(w.props);
+        if (QB.season()) stage.decorate(QB.season());
+        if (QB.isNight()) stage.setNight();
         sync(w);
         var pad = QB.dpad(function (d) { pad.hit(d); go(d); }, innerWidth < 760);
         view.querySelector('[data-pad]').appendChild(pad);
@@ -2528,11 +2805,13 @@
             var c = W.cubes.filter(function (x) { return x.id === a.d.id; })[0];
             if (c) { c.x = a.d.x; c.z = a.d.z; c.orient = a.d.orient; ['love', 'grown'].forEach(function (k) { c[k] = res.cube[k]; a.d[k] = res.cube[k]; }); }
             if (res.sparkles != null) W.me.sparkles = res.sparkles;
+            if (res.reward && res.reward.egg) { W.egg = null; stage.setEgg(null); }
             tagFor(a); hud();
           } });
         stage.onSwipe = function (d) { pad.hit(d); go(d); };
-        stage.onPick = function (a) {
+        stage.onPick = function (a, e) {
           if (!a) return;
+          if (a.d.mine && a === sel) { var d = stage.pushDir(a, e); pad.hit(d); go(d); return; }
           if (a.d.mine) { select(a); a.express('love', 600); QB.sfx('pop'); } else { a.express('snack', 600); QB.sfx('pop'); card(a); }
         };
         offKeys = QB.keys(function (d) { pad.hit(d); go(d); });

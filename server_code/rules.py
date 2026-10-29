@@ -91,13 +91,56 @@ HATS = [("party", "Party Hat", 20), ("flower", "Daisy", 25), ("bow", "Big Bow", 
 TOYS = [("lolly", "Lollipop Tree", 30), ("trampoline", "Trampoline", 50), ("jelly", "Jelly Pool", 60),
         ("rainbow", "Rainbow", 80), ("discoball", "Disco Ball", 100), ("house", "Cupcake House", 120)]
 SUPPLIES = [("potion", "Love Potion", 15), ("whistle", "Wake-Up Whistle", 20)]
-HAT_KEYS = {k for k, _, _ in HATS}
+# Limited hats: only in the shop during their months; once bought they're yours forever.
+SEASONAL_HATS = [("pumpkin", "Pumpkin Head", 45, (10, 11)), ("witch", "Witch Hat", 55, (10, 11)),
+                 ("santa", "Santa Hat", 45, (12, 1)), ("antlers", "Reindeer Antlers", 55, (12, 1)),
+                 ("bunny", "Bunny Ears", 45, (3, 4)), ("sunhat", "Sun Hat", 45, (6, 7, 8))]
+HAT_KEYS = {k for k, _, _ in HATS} | {k for k, _, _, _ in SEASONAL_HATS}
 TOY_KEYS = {k for k, _, _ in TOYS}
 PRICES = {k: p for k, _, p in HATS + TOYS + SUPPLIES}
+PRICES.update({k: p for k, _, p, _ in SEASONAL_HATS})
+SEASON_MONTHS = {k: m for k, _, _, m in SEASONAL_HATS}
+
+
+def in_season(key, month):
+    return key not in SEASON_MONTHS or month in SEASON_MONTHS[key]
 
 
 def new_inventory():
     return {"hats": [], "toys": [], "potion": 1, "whistle": 1}
+
+
+# ------------------------------------------------------------------------------------------- daily quests
+# key, text, goal, sparkles. Three are picked per player per day (the same three all day).
+QUESTS = [
+    ("roll", "Roll your cubes 15 times", 15, 15),
+    ("love", "Land the 💖 heart side 3 times", 3, 20),
+    ("boing", "Go BOING! 3 times", 3, 15),
+    ("snack", "Have 2 Snack Attacks", 2, 15),
+    ("sunny", "Get 2 Sunny Smiles", 2, 15),
+    ("disco", "Do the Dizzy Disco 2 times", 2, 15),
+    ("toot", "Toot-toot 3 times", 3, 15),
+    ("world_roll", "Roll around the World 10 times", 10, 20),
+    ("chat", "Say something in the World", 1, 10),
+    ("hands", "Hold hands with another cube", 1, 30),
+    ("doodle", "Doodle on a cube's face", 1, 15),
+    ("hat", "Put a hat on a cube", 1, 10),
+    ("egg", "Find a Surprise Egg in the World", 1, 40),
+    ("rainbow", "Do a Rainbow Roll (all 6 sides in 6 rolls)", 1, 40),
+]
+QUEST_INFO = {k: (t, g, s) for k, t, g, s in QUESTS}
+QUEST_CHEST = 30          # bonus for finishing all three
+RAINBOW_BONUS = 30        # all six sides in six rolls
+EGG_SPARKLES = 25
+EGG_WAIT = 90             # seconds before a new Surprise Egg appears
+
+
+def pick_quests(day, uid):
+    rnd = random.Random("%s:%s" % (day, uid))
+    keys = [k for k, _, _, _ in QUESTS]
+    first = rnd.choice(["roll", "love", "world_roll"])     # always one easy rolling quest
+    rest = rnd.sample([k for k in keys if k != first], 2)
+    return [first] + rest
 
 
 # ------------------------------------------------------------------------------------------- the world map
