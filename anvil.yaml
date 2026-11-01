@@ -474,15 +474,48 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other cubes to make cube babies!
+  description: Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other players' cubes to make cube
+    babies. A silly browser game to play with a grown-up.
   logo_img: asset:icon-512.png
-  title: QuickyBricks
+  title: 'QuickyBricks: a silly 3D cube game for kids and grown-ups'
 name: QuickyBricks
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=091f917c62\"></script>\n<meta name=\"viewport\" content=\"width=device-width,\
-    \ initial-scale=1, viewport-fit=cover\">\n<meta name=\"theme-color\" content=\"#fff4e0\">\n<meta name=\"apple-mobile-web-app-capable\"\
-    \ content=\"yes\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"\
-    https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Lilita+One&display=swap\"\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=091f917c62\"></script>\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/quickybricks.json\
+    \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://quickybricks.com/\">\n<meta name=\"robots\" content=\"\
+    index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"3D\
+    \ game for kids, silly browser game, family game online, cute cube game, play with your child, doodle game, kids game\
+    \ no download, character creator game, three.js game\">\n<meta name=\"author\" content=\"Arkvital\">\n<meta property=\"\
+    og:type\" content=\"website\">\n<meta property=\"og:site_name\" content=\"QuickyBricks\">\n<meta property=\"og:title\"\
+    \ content=\"QuickyBricks: a silly 3D cube game for kids and grown-ups\">\n<meta property=\"og:description\" content=\"\
+    Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other players&#x27; cubes to make cube babies.\
+    \ A silly browser game to play with a grown-up.\">\n<meta property=\"og:locale\" content=\"en_CA\">\n<meta property=\"\
+    og:url\" content=\"https://quickybricks.com/\">\n<meta property=\"og:image\" content=\"https://quickybricks.com/_/theme/og-image.png\"\
+    >\n<meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\">\n<meta property=\"\
+    og:image:alt\" content=\"QuickyBricks: Roll, doodle and hatch a giggly family of squishy 3D cubes\">\n<meta name=\"twitter:card\"\
+    \ content=\"summary_large_image\">\n<meta name=\"twitter:title\" content=\"QuickyBricks: a silly 3D cube game for kids\
+    \ and grown-ups\">\n<meta name=\"twitter:description\" content=\"Roll, doodle and hatch a giggly family of squishy 3D\
+    \ cubes. Hold hands with other players&#x27; cubes to make cube babies. A silly browser game to play with a grown-up.\"\
+    >\n<meta name=\"twitter:image\" content=\"https://quickybricks.com/_/theme/og-image.png\">\n<link rel=\"alternate\" type=\"\
+    text/plain\" title=\"QuickyBricks for AI assistants\" href=\"https://quickybricks.com/llms.txt\">\n<script type=\"application/ld+json\"\
+    >{\"@context\": \"https://schema.org\", \"@graph\": [{\"@type\": \"VideoGame\", \"@id\": \"https://quickybricks.com/#app\"\
+    , \"name\": \"QuickyBricks\", \"url\": \"https://quickybricks.com/\", \"description\": \"Roll, doodle and hatch a giggly\
+    \ family of squishy 3D cubes. Hold hands with other players' cubes to make cube babies. A silly browser game to play with\
+    \ a grown-up.\", \"image\": \"https://quickybricks.com/_/theme/og-image.png\", \"inLanguage\": \"en\", \"publisher\":\
+    \ {\"@id\": \"https://arkvital.com/#org\"}, \"keywords\": \"3D game for kids, silly browser game, family game online,\
+    \ cute cube game, play with your child, doodle game, kids game no download, character creator game, three.js game\", \"\
+    applicationCategory\": \"GameApplication\", \"operatingSystem\": \"Any (web browser)\", \"browserRequirements\": \"Requires\
+    \ JavaScript and a modern web browser\", \"featureList\": [\"A real 3D cube to roll, recolour, doodle on and name, right\
+    \ on the landing page\", \"Six roll events with sounds and particles\", \"Up to 10 hand-made cubes per player\", \"Hold\
+    \ hands in the shared World to make cube babies\", \"Babies blend their parents' eyes, mouth, colour and name\"], \"audience\"\
+    : {\"@type\": \"Audience\", \"audienceType\": \"Kids playing with a grown-up (accounts are 16+)\"}}, {\"@type\": \"WebSite\"\
+    , \"@id\": \"https://quickybricks.com/#site\", \"url\": \"https://quickybricks.com/\", \"name\": \"QuickyBricks\", \"\
+    publisher\": {\"@id\": \"https://arkvital.com/#org\"}}, {\"@type\": \"Organization\", \"@id\": \"https://arkvital.com/#org\"\
+    , \"name\": \"Arkvital\", \"url\": \"https://arkvital.com\", \"email\": \"arkvital@outlook.com\", \"address\": {\"@type\"\
+    : \"PostalAddress\", \"addressLocality\": \"Montreal\", \"addressRegion\": \"QC\", \"addressCountry\": \"CA\"}}]}</script>\n\
+    <!-- seo:end -->\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<meta\
+    \ name=\"theme-color\" content=\"#fff4e0\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<link rel=\"\
+    preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n\
+    <link href=\"https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Lilita+One&display=swap\"\
     \ rel=\"stylesheet\">\n<link id=\"ui-favicon\" rel=\"icon\" type=\"image/svg+xml\" href=\"_/theme/icon.svg?v=e744724d27\"\
     >\n<link rel=\"apple-touch-icon\" href=\"_/theme/icon-180.png?v=e744724d27\">\n<script>\n/* Keep our tab icon: Anvil adds\
     \ its own <link rel=\"icon\">, so drop any other icon link. */\n(function () {\n  function keep() {\n    var ours = document.getElementById('ui-favicon');\n\
