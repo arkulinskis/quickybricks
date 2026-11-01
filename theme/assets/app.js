@@ -2309,7 +2309,10 @@
       '<span class="k">' + esc(E.side) + '</span><h3>' + esc(E.label) + '</h3><p>' + esc(E.text) + '</p></div>'; }).join('');
     var mom = { name: 'Sprinkle', color: '#ff5fa2', eyes: 5, mouth: 0 }, dad = { name: 'Blueberry', color: '#2f8cff', eyes: 1, mouth: 4 }, kid = { name: 'Sprinberry', color: '#a35cf0', eyes: 5, mouth: 4 };
     view.innerHTML =
-      '<section class="lp-hero"><div class="ui-wrap"><div>' +
+      '<section class="lp-hero">' +
+        [['#ff5fa2', '7%', '120px', '-8deg'], ['#34d6c4', '88%', '70px', '10deg'], ['#ffd23f', '82%', '300px', '-12deg'], ['#a07bff', '4%', '330px', '6deg']].map(function (f, i) {
+          return '<span class="lp-floaty" aria-hidden="true" style="background:' + f[0] + ';left:' + f[1] + ';top:' + f[2] + ';--r:' + f[3] + ';animation-delay:-' + i + 's"></span>'; }).join('') +
+        '<div class="ui-wrap"><div class="lp-title">' +
         '<div class="eyebrow">Squishy cubes · silly surprises</div><h1>' + C.title + '</h1><p class="lp-lead">' + esc(C.lead) + '</p>' +
         '<div class="lp-cta">' + primary + '</div>' +
         '<div class="lp-proof">' + C.proof.map(function (p) { return '<span class="ui-badge">' + esc(p) + '</span>'; }).join('') + '</div>' +
