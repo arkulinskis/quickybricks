@@ -480,7 +480,7 @@ metadata:
   title: 'QuickyBricks: a silly 3D cube game for kids and grown-ups'
 name: QuickyBricks
 native_deps:
-  head_html: "<script src=\"_/theme/legal-kit.js?v=091f917c62\"></script>\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/quickybricks.json\
+  head_html: "<script src=\"_/theme/legal-kit.js?v=b998faf92c\"></script>\n<!-- seo:start (APP_MAKER/seo: edit seo/apps/quickybricks.json\
     \ and run seo.py, not here) -->\n<link rel=\"canonical\" href=\"https://quickybricks.com/\">\n<meta name=\"robots\" content=\"\
     index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\">\n<meta name=\"keywords\" content=\"3D\
     \ game for kids, silly browser game, family game online, cute cube game, play with your child, doodle game, kids game\
