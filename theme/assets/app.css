@@ -840,7 +840,7 @@ html, body { background-color: var(--c-bg) !important;
   border-radius: 18px; padding: 10px 12px; box-shadow: 3px 3px 0 var(--c-outline); }
 .cb-q.claimed { background: var(--c-surface-2); box-shadow: none; }
 .cb-q .em { font-size: 1.5rem; text-align: center; }
-.anvil-role-cb-q-text { font: 400 1rem/1.15 var(--font-display); letter-spacing: .02em; }
+.anvil-role-cb-q-text { font: 400 1rem/1.3 var(--font-display); letter-spacing: .02em; }
 .cb-q .bar { height: 10px; border-radius: 99px; background: var(--c-surface-2); border: 2px solid var(--c-outline); overflow: hidden; margin-top: 5px; }
 .cb-q .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--c-accent), #4cd964); }
 .cb-chest { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; border: 3px dashed var(--c-brand); border-radius: 18px;
@@ -1029,7 +1029,7 @@ html, body { background-color: var(--c-bg) !important;
 @media (max-width: 480px) {
   .ch-dex { gap: 2px; grid-template-columns: 18px repeat(10, minmax(0, 1fr)); }
   .ch-dex canvas, .ch-dex .q { border-radius: 6px; border-width: 1.5px; }
-  .ch-dex .h { font-size: .6875rem; writing-mode: vertical-rl; transform: rotate(180deg); height: 56px; }
+  .ch-dex .h { font-size: .75rem; writing-mode: vertical-rl; transform: rotate(180deg); height: 56px; }
 }
 
 /* ===== admin extras ===== */
@@ -1039,7 +1039,7 @@ html, body { background-color: var(--c-bg) !important;
 .ad-rep-actions { margin-top: 10px; }
 .ad-chat-head, .ad-chat-row { grid-template-columns: 90px minmax(0, 1.6fr) 110px 56px; }
 .ad-chat-head b { font-size: .8rem; color: var(--c-muted); }
-.anvil-role-ad-chat-text { font: 400 1.2rem/1 var(--font-display); }
+.anvil-role-ad-chat-text { font: 400 1.2rem/1.3 var(--font-display); }
 .anvil-role-ad-chat-note { margin-bottom: 12px; }
 @media (max-width: 720px) { .ad-chat-head { display: none; } .ad-chat-row { grid-template-columns: 70px minmax(0, 1fr) 56px; } .ad-chat-row .anvil-role-fine-print { display: none; } }
 .item-wrap { height: 100%; }

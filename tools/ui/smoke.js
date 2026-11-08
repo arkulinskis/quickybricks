@@ -91,8 +91,9 @@
     const next = button(/›/, '.lp-picker'); if (next) next.click();
     await sleep(300);
     if (!localStorage.getItem('quickybricks.draft')) bad.push('#landing: the playground cube was not kept');
-    const dpad = q('.qb-dpad button[data-dir="E"]'); if (dpad) { dpad.click(); await sleep(2500); }
-    if (!/practice|sparkles|arrows/i.test((q('.lp-keep') || {}).innerText || '')) bad.push('#landing: keep box text missing');
+    const dpad = q('.qb-dpad button[data-dir="E"]'); if (dpad) dpad.click();
+    try { await until(() => /✨/.test((q('.lp-keep') || {}).innerText || ''), 'the roll to finish', 20000); }
+    catch (e) { bad.push('#landing: rolling the playground cube did nothing'); }
     button(/Doodle/, '.lp-pickers').click();
     await until(() => q('.qb-pad-canvas'), 'the doodle dialog');
     await sleep(500);
@@ -109,6 +110,12 @@
     await stage('#cubby');
     const id = (q('.cb-cube[data-key]') || { getAttribute: () => '' }).getAttribute('data-key');
     if (!id) bad.push('#cubby: the landing cube was not adopted');
+    const spark = () => (q('.anvil-role-qb-sparkles') || {}).innerText || '';
+    const before = spark();
+    await until(() => q('.cb-pad .qb-dpad button[data-dir="E"]') && window.QB.lastStage && Object.keys(window.QB.lastStage.actors).length, 'the Cubby mat', 25000);
+    q('.cb-pad .qb-dpad button[data-dir="E"]').click();
+    try { await until(() => spark() !== before, 'a server roll (sparkles change)', 25000); log.push('ok   #cubby: rolled on the server (' + before + ' -> ' + spark() + ')'); }
+    catch (e) { bad.push('#cubby: the roll did not reach the server'); }
     await open('#make', /Cube Maker/);
     const eyes = qq('.mk-opt'); if (eyes.length !== 20) bad.push('#make: ' + eyes.length + ' face options (want 20)');
     if (eyes[3]) { eyes[3].click(); await sleep(500); }
