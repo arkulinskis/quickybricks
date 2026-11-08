@@ -7,7 +7,7 @@ around them with an offset instead of whole files.
 
 **What it is:** Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other players' cubes to make cube babies. A silly browser game to play with a grown-up.
 **Live:** https://quickybricks.com · **Repo:** github.com/arkulinskis/quickybricks · **Layout:** native Anvil Forms · **Deploy:** master
-**Guide** (workflow, design rules, product knowledge): `QuickyBricks/.claude/skills/quickybricks/SKILL.md`
+**Guide** (workflow, design rules, product knowledge): `.claude/skills/quickybricks/SKILL.md`
 
 ## How to change it
 
@@ -47,8 +47,7 @@ around them with an offset instead of whole files.
   common `getattr(anvil.server, "session")`, rules `PROPS: list`).
 - `tools/ui/smoke.js` opens every page (guest, member, admin) at desktop and phone width, rolls the playground cube,
   rolls a cube on the server, sends a cube to the World. Headless Chrome draws WebGL with SwiftShader (drive.mjs flags).
-- ArkMusic: `theme/assets/ark-music.js` is a copy of APP_MAKER/media/public/ark-music.js; after the merge
-  tools/music_sync.py must point at it. The app guide (.claude/skills) still describes the JS layout until the merge.
+- ArkMusic: `theme/assets/ark-music.js` is a copy of APP_MAKER/media/public/ark-music.js written by tools/music_sync.py.
 <!-- /NOTES -->
 
 ## Pages (`client_code/router.py`)
