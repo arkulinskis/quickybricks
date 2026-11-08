@@ -1,0 +1,7 @@
+<div class="cb-tile-item">
+  <button type="button" class="cb-cube" anvil:name="tile" anvil:on-dom:click="self.tile_click">
+    <anvil-component type="QuickyBricks.Components.Thumb" name="thumb" prop:size="74" bind:cube="self.item"></anvil-component>
+    <anvil-component type="Label" name="name" prop:role='["cb-tile-name"]' bind:text="self.item['name']"></anvil-component>
+    <anvil-component type="Label" name="meta" prop:role='["cb-small"]'></anvil-component>
+  </button>
+</div>

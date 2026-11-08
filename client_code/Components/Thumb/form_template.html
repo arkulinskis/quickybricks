@@ -1,0 +1,19 @@
+---
+custom_component: true
+properties:
+  - name: cube
+    type: object
+    default_value: null
+    description: "A cube dict from the server (name, color, eyes, mouth, drawing, hat)"
+    default_binding_prop: true
+  - name: size
+    type: number
+    default_value: 74
+    description: Width and height in pixels
+toolbox_item:
+  title: Cube thumbnail
+  group: QuickyBricks
+help_text: |
+  A little 3/4-view picture of a cube with its face, doodle and hat (QB.drawThumb in theme/assets/qb.js).
+---
+<span class="qb-thumb-box"><canvas class="qb-thumb" anvil:dom-node="cv"></canvas></span>

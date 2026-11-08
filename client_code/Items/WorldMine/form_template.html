@@ -1,0 +1,11 @@
+<div class="wd-me-item">
+  <button type="button" class="wd-me" anvil:name="row" anvil:on-dom:click="self.row_click">
+    <anvil-component type="QuickyBricks.Components.Thumb" name="thumb" prop:size="42" bind:cube="self.item"></anvil-component>
+    <span class="grow">
+      <anvil-component type="Label" name="name" prop:role='["wd-me-name"]' bind:text="self.item['name']"></anvil-component>
+      <anvil-component type="QuickyBricks.Components.LoveBar" name="love"></anvil-component>
+      <anvil-component type="Label" name="baby" prop:text="🍼 baby" prop:role='["cb-small"]'></anvil-component>
+    </span>
+    <anvil-component type="Label" name="mood" prop:role='["wd-me-mood"]'></anvil-component>
+  </button>
+</div>

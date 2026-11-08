@@ -1,0 +1,14 @@
+---
+custom_component: true
+properties: []
+events:
+  - name: drawn
+    description: A stroke, stamp, undo or clear changed the doodle
+toolbox_item:
+  title: Doodle pad
+  group: QuickyBricks
+help_text: |
+  The crayon pad for a cube's face doodle (QB.drawPad in theme/assets/qb.js): colours, sizes, stamps, eraser, undo,
+  clear. Call set_cube(cube) first; data_url() gives the doodle as a PNG data URL ("" when empty).
+---
+<div class="qb-pad-wrap"><div anvil:dom-node="host"></div></div>

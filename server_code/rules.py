@@ -145,7 +145,7 @@ def pick_quests(day, uid):
 
 # ------------------------------------------------------------------------------------------- the world map
 # Props block their tiles. x, z = top-left tile; w, d = size in tiles.
-PROPS = [
+PROPS: list = [
     {"kind": "gazebo", "x": 9, "z": 8, "w": 2, "d": 2},
     {"kind": "lolly", "x": 3, "z": 4, "w": 1, "d": 1, "color": "#ff5fa2"},
     {"kind": "lolly", "x": 15, "z": 3, "w": 1, "d": 1, "color": "#34d6c4"},

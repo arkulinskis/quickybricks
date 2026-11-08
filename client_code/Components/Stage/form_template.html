@@ -1,0 +1,16 @@
+---
+custom_component: true
+properties:
+  - name: look
+    type: string
+    default_value: ""
+    description: "CSS class for the stage box (its size and background): lp-stage, mk-stage, cu-stage, cb-stage, wd-stage"
+toolbox_item:
+  title: 3D stage
+  group: QuickyBricks
+help_text: |
+  A three.js stage from the engine (theme/assets/qb-play.js): the landing / Maker / cube card mat (hero), the Cubby
+  play mat (cubby) or the World (world). Call mount(kind, data, hooks, pad) once the data is there; the stage starts
+  when the component is on screen and is destroyed (WebGL context freed) when it leaves.
+---
+<div class="qb-host-wrap"><div class="qb-host" anvil:dom-node="host"></div></div>

@@ -1,0 +1,19 @@
+---
+custom_component: true
+properties:
+  - name: recent
+    type: string
+    default_value: ""
+    description: "The cube's last six top faces as digits (cubes.recent), e.g. '043'"
+    default_binding_prop: true
+toolbox_item:
+  title: Rainbow Roll
+  group: QuickyBricks
+help_text: |
+  The six side emojis; the ones that landed on top in the last six rolls light up (Rainbow Roll progress).
+---
+<div class="qb-rainbow-box">
+  <div class="qb-rainbow" anvil:name="row" role="img">
+    <span anvil:name="s0"></span><span anvil:name="s1"></span><span anvil:name="s2"></span><span anvil:name="s3"></span><span anvil:name="s4"></span><span anvil:name="s5"></span>
+  </div>
+</div>

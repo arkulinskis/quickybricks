@@ -1,0 +1,6 @@
+<div class="wd-pick-item">
+  <button type="button" class="wd-pick-btn" anvil:name="pick" anvil:on-dom:click="self.pick_click">
+    <anvil-component type="QuickyBricks.Components.Thumb" name="thumb" prop:size="70" bind:cube="self.item"></anvil-component>
+    <anvil-component type="Label" name="name" prop:role='["wd-pick-name"]' bind:text="self.item['name']"></anvil-component>
+  </button>
+</div>

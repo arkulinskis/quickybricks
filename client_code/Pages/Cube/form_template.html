@@ -1,0 +1,91 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap page-cube">
+      <a class="ui-btn ghost sm cu-back" href="#cubby"><i class="ic ic-back"></i>My Cubby</a>
+
+      <div class="ui-empty" anvil:name="missing_part">
+        <div class="ui-empty-em" aria-hidden="true">🫥</div>
+        <h1 class="mk-full-h">That cube wandered off</h1>
+        <p>It may have been renamed or removed. Your own cubes are in your Cubby.</p>
+        <a class="ui-btn primary" href="#cubby">My Cubby</a>
+      </div>
+
+      <div anvil:name="cube_part">
+        <div class="cu">
+          <div>
+            <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cu-stage"></anvil-component>
+            <div class="cu-under">
+              <div anvil:dom-node="pad"></div>
+              <anvil-component type="Label" name="roll_tip" prop:role='["cu-tip"]'></anvil-component>
+            </div>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row between top">
+              <div class="cu-titles">
+                <anvil-component type="Label" name="name" prop:role='["page-title"]'></anvil-component>
+                <anvil-component type="Label" name="whose" prop:role='["page-lead"]'></anvil-component>
+              </div>
+              <a class="ui-btn sm" href="#make" anvil:name="edit_link">✏️ Doodle / rename</a>
+              <anvil-component type="Button" name="report_button" prop:text="🚩 Report" prop:role='["btn", "btn-sm", "btn-danger"]'></anvil-component>
+            </div>
+            <div class="cu-facts">
+              <div class="cu-fact"><anvil-component type="Label" name="f_color" prop:role='["cu-fact-v"]'></anvil-component><span>colour</span></div>
+              <div class="cu-fact"><anvil-component type="Label" name="f_gen" prop:role='["cu-fact-v"]'></anvil-component><anvil-component type="Label" name="f_gen_how" prop:role='["cu-fact-k"]'></anvil-component></div>
+              <div class="cu-fact"><anvil-component type="Label" name="f_rolls" prop:role='["cu-fact-v"]'></anvil-component><span>rolls</span></div>
+              <div class="cu-fact"><anvil-component type="Label" name="f_age" prop:role='["cu-fact-v"]'></anvil-component><span>old</span></div>
+              <div class="cu-fact"><anvil-component type="Label" name="f_eyes" prop:role='["cu-fact-v"]'></anvil-component><span>eyes</span></div>
+              <div class="cu-fact"><anvil-component type="Label" name="f_mouth" prop:role='["cu-fact-v"]'></anvil-component><span>mouth</span></div>
+            </div>
+            <anvil-component type="Label" name="status" prop:role='["cu-status"]'></anvil-component>
+            <anvil-component type="QuickyBricks.Components.LoveBar" name="love_bar"></anvil-component>
+
+            <div anvil:name="owner_part">
+              <div class="cu-sec">
+                <h2 class="cu-h">Rainbow Roll</h2>
+                <p class="ui-hint cu-hint">Land all six sides on top in six rolls for +30 ✨</p>
+                <anvil-component type="QuickyBricks.Components.Rainbow" name="rainbow"></anvil-component>
+              </div>
+              <div class="cu-sec">
+                <h2 class="cu-h">Wardrobe</h2>
+                <anvil-component type="RepeatingPanel" name="hats_panel" prop:item_template="QuickyBricks.Items.HatButton" prop:role='["cu-hats"]'></anvil-component>
+                <p class="ui-hint" anvil:name="no_hats">No hats yet. Get some in the <a href="#shop">Sparkle Shop</a>!</p>
+              </div>
+              <div class="cu-sec">
+                <h2 class="cu-h">Play</h2>
+                <div class="ui-row">
+                  <anvil-component type="Button" name="world_button" prop:role='["btn", "btn-sm", "btn-mint"]'></anvil-component>
+                  <anvil-component type="CheckBox" name="open_box"></anvil-component>
+                </div>
+                <div class="ui-row cu-items">
+                  <anvil-component type="Button" name="potion_button" prop:role='["btn", "btn-sm"]'></anvil-component>
+                  <anvil-component type="Button" name="whistle_button" prop:role='["btn", "btn-sm"]'></anvil-component>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-card cu-family">
+          <div class="ui-row between">
+            <h2 class="cu-family-h">Family tree</h2>
+            <anvil-component type="Button" name="poster_button" prop:text="🖼️ Make a family poster" prop:role='["btn", "btn-sm", "btn-lemon"]'></anvil-component>
+          </div>
+          <div class="cu-sec">
+            <h3>Parents</h3>
+            <anvil-component type="RepeatingPanel" name="parents_panel" prop:item_template="QuickyBricks.Items.FamilyCube" prop:role='["cu-fam"]'></anvil-component>
+            <anvil-component type="Label" name="no_parents" prop:role='["muted-strong"]'></anvil-component>
+          </div>
+          <div class="cu-sec" anvil:name="grand_part">
+            <h3>Grandparents</h3>
+            <anvil-component type="RepeatingPanel" name="grand_panel" prop:item_template="QuickyBricks.Items.FamilyCube" prop:role='["cu-fam"]'></anvil-component>
+          </div>
+          <div class="cu-sec">
+            <h3>Babies <span class="ui-badge"><anvil-component type="Label" name="babies_count" prop:role='["inline"]'></anvil-component></span></h3>
+            <anvil-component type="RepeatingPanel" name="babies_panel" prop:item_template="QuickyBricks.Items.FamilyCube" prop:role='["cu-fam"]'></anvil-component>
+            <anvil-component type="Label" name="no_babies" prop:role='["muted-strong"]'></anvil-component>
+          </div>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

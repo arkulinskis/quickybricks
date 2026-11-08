@@ -1,0 +1,30 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="wd page-world">
+      <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="wd-stage"></anvil-component>
+      <div class="wd-hud">
+        <anvil-component type="Label" name="sparkles" prop:role='["qb-sparkles"]'></anvil-component>
+        <anvil-component type="Label" name="here_badge" prop:role='["badge", "wd-badge"]'></anvil-component>
+        <anvil-component type="Button" name="send_button" prop:role='["btn", "btn-sm", "btn-mint"]'></anvil-component>
+        <anvil-component type="Button" name="egg_button" prop:text="🥚 Find the egg!" prop:role='["wd-egg"]' prop:tooltip="A Surprise Egg is hiding somewhere on the island"></anvil-component>
+      </div>
+      <div class="wd-mine">
+        <anvil-component type="RepeatingPanel" name="mine_panel" prop:item_template="QuickyBricks.Items.WorldMine" prop:role='["wd-mine-list"]'></anvil-component>
+        <div class="ui-card tight wd-none" anvil:name="mine_none">None of your cubes are here yet. Press <b>Send a cube</b>!</div>
+      </div>
+      <anvil-component type="Label" name="news" prop:role='["wd-news"]'></anvil-component>
+      <div class="wd-bottom">
+        <div anvil:dom-node="pad"></div>
+        <div class="wd-chat">
+          <div class="wd-chat-row">
+            <anvil-component type="TextBox" name="chat_box" prop:placeholder="HI!" prop:role='["wd-chat-box"]'></anvil-component>
+            <anvil-component type="Button" name="say_button" prop:text="Say" prop:role='["btn", "btn-primary"]'></anvil-component>
+            <anvil-component type="Button" name="emoji_button" prop:text="😀" prop:role='["btn", "btn-icon"]' prop:tooltip="Emoji"></anvil-component>
+          </div>
+          <anvil-component type="RepeatingPanel" name="emoji_panel" prop:item_template="QuickyBricks.Items.EmojiKey" prop:role='["wd-emoji"]'></anvil-component>
+          <anvil-component type="Label" name="log" prop:text="3 letters at a time · one message every 30 seconds" prop:role='["wd-log"]'></anvil-component>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

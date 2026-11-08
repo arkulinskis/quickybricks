@@ -1,0 +1,38 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap page-champs">
+      <div class="ui-page-head">
+        <div>
+          <h1>Cube Champs 🏆</h1>
+          <anvil-component type="Label" name="rank" prop:role='["page-lead"]'></anvil-component>
+        </div>
+      </div>
+      <div class="ch-top">
+        <div class="ui-card">
+          <h2>Most cubes</h2>
+          <anvil-component type="RepeatingPanel" name="most_panel" prop:item_template="QuickyBricks.Items.ChampRow" prop:role='["ch-rows"]'></anvil-component>
+          <p class="muted" anvil:name="nobody">Nobody yet!</p>
+        </div>
+        <div class="ch-stack">
+          <div class="ui-card">
+            <h2>My numbers</h2>
+            <anvil-component type="RepeatingPanel" name="stats_panel" prop:item_template="QuickyBricks.Items.StatCard" prop:role='["ch-me"]'></anvil-component>
+          </div>
+          <div class="ui-card">
+            <h2>Biggest families</h2>
+            <anvil-component type="RepeatingPanel" name="families_panel" prop:item_template="QuickyBricks.Items.ChampRow" prop:role='["ch-rows"]'></anvil-component>
+          </div>
+        </div>
+      </div>
+      <div class="ch-sec">
+        <h2>My stickers <span class="ui-badge brand"><anvil-component type="Label" name="stickers_count" prop:role='["inline"]'></anvil-component></span></h2>
+        <anvil-component type="RepeatingPanel" name="stickers_panel" prop:item_template="QuickyBricks.Items.Sticker" prop:role='["ch-stick"]'></anvil-component>
+      </div>
+      <div class="ch-sec ui-card">
+        <h2>Cubedex <span class="ui-badge brand"><anvil-component type="Label" name="faces_count" prop:role='["inline"]'></anvil-component></span></h2>
+        <p class="ch-lead">Every eyes + mouth combo you own. Babies mix their parents' faces: hold hands with new cubes to fill it in!</p>
+        <anvil-component type="QuickyBricks.Components.Cubedex" name="dex"></anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

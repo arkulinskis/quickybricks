@@ -1,0 +1,15 @@
+---
+custom_component: true
+properties:
+  - name: faces
+    type: object
+    default_value: null
+    description: "The eyes-mouth combos the player owns, as 'e-m' strings (get_champs faces)"
+    default_binding_prop: true
+toolbox_item:
+  title: Cubedex
+  group: QuickyBricks
+help_text: |
+  All 100 faces (10 eyes x 10 mouths) as a grid; the ones the player owns are painted, the rest show "?".
+---
+<div class="ch-dex-wrap"><div class="ch-dex" anvil:dom-node="grid"></div></div>

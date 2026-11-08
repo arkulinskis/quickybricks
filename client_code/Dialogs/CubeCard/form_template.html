@@ -1,0 +1,11 @@
+<div class="ui qb-dialog wd-card">
+  <anvil-component type="QuickyBricks.Components.Thumb" name="thumb" prop:size="120"></anvil-component>
+  <anvil-component type="Label" name="title" prop:role='["dlg-title", "center"]'></anvil-component>
+  <anvil-component type="Label" name="whose" prop:role='["dlg-lead", "center"]'></anvil-component>
+  <anvil-component type="Label" name="why" prop:role='["wd-why"]'></anvil-component>
+  <anvil-component type="Label" name="can" prop:role='["msg-note", "wd-can"]'></anvil-component>
+  <div class="ui-row dlg-actions dlg-center">
+    <a class="ui-btn sm" href="#cubby" anvil:name="card_link" anvil:on-dom:click="self.card_click">🪪 Card</a>
+    <anvil-component type="Button" name="hold_button" prop:text="🤝 Hold hands!" prop:role='["btn", "btn-primary"]'></anvil-component>
+  </div>
+</div>

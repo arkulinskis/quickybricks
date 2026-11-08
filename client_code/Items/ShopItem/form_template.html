@@ -1,0 +1,10 @@
+<div class="item-wrap">
+<div class="ui-card sh-item" anvil:name="card">
+  <span class="ui-badge sh-lim" anvil:name="limited">⏳ Limited time!</span>
+  <span class="em" anvil:name="em" aria-hidden="true"><anvil-component type="Label" name="emoji" bind:text="self.item['emoji']"></anvil-component></span>
+  <anvil-component type="Label" name="name" prop:role='["sh-name"]' bind:text="self.item['name']"></anvil-component>
+  <anvil-component type="Label" name="about" prop:role='["sh-about"]'></anvil-component>
+  <span class="ui-badge good" anvil:name="owned">✓ Yours!</span>
+  <anvil-component type="Button" name="buy_button" prop:role='["btn", "btn-sm"]'></anvil-component>
+</div>
+</div>

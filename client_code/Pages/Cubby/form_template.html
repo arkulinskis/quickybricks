@@ -1,0 +1,70 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap page-cubby">
+      <div class="cb-top">
+        <anvil-component type="Label" name="title" prop:role='["page-title"]'></anvil-component>
+        <div class="cb-chips">
+          <anvil-component type="Label" name="sparkles" prop:role='["qb-sparkles"]'></anvil-component>
+          <anvil-component type="Label" name="total_badge" prop:role='["badge"]'></anvil-component>
+          <anvil-component type="Label" name="handmade_badge" prop:role='["badge"]'></anvil-component>
+          <anvil-component type="Button" name="gift_button" prop:text="🎁 Daily gift!" prop:role='["btn", "btn-sm", "btn-lemon", "wiggle"]'></anvil-component>
+          <anvil-component type="Label" name="streak_badge" prop:role='["badge"]' prop:tooltip="Daily streak"></anvil-component>
+        </div>
+      </div>
+
+      <div class="ui-empty" anvil:name="empty_part">
+        <div class="ui-empty-em" aria-hidden="true">🧊</div>
+        <h2>Your Cubby is empty!</h2>
+        <p>Make your very first cube: pick a colour, eyes, a mouth, and doodle a face.</p>
+        <a class="ui-btn primary lg" href="#make">Make my first cube ✨</a>
+      </div>
+
+      <div class="cb-play" anvil:name="play_part">
+        <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cb-stage"></anvil-component>
+        <div class="cb-side">
+          <div class="ui-card cb-sel">
+            <p class="cb-sel-none" anvil:name="sel_none">Tap a cube to pick it, then roll it!</p>
+            <div anvil:name="sel_box">
+              <anvil-component type="QuickyBricks.Components.Thumb" name="sel_thumb" prop:size="96"></anvil-component>
+              <anvil-component type="Label" name="sel_name" prop:role='["cb-sel-name"]'></anvil-component>
+              <anvil-component type="Label" name="sel_meta" prop:role='["cb-sel-meta"]'></anvil-component>
+              <anvil-component type="QuickyBricks.Components.LoveBar" name="sel_love"></anvil-component>
+              <anvil-component type="QuickyBricks.Components.Rainbow" name="sel_rainbow"></anvil-component>
+              <anvil-component type="Label" name="sel_hint" prop:role='["cb-sel-hint"]'></anvil-component>
+              <div class="ui-row cb-sel-actions">
+                <a class="ui-btn sm" href="#cubby" anvil:name="card_link">🪪 Card</a>
+                <anvil-component type="Button" name="world_button" prop:role='["btn", "btn-sm", "btn-mint"]'></anvil-component>
+              </div>
+            </div>
+          </div>
+          <div class="cb-pad" anvil:dom-node="pad"></div>
+        </div>
+      </div>
+
+      <div class="cb-sec">
+        <h2>Today's quests</h2>
+        <anvil-component type="RepeatingPanel" name="quests_panel" prop:item_template="QuickyBricks.Items.Quest" prop:role='["cb-quests"]'></anvil-component>
+        <div class="cb-chest" anvil:name="chest_box">
+          <anvil-component type="Label" name="chest_text" prop:role='["cb-chest-text"]'></anvil-component>
+          <anvil-component type="Button" name="chest_button" prop:text="Open chest" prop:role='["btn", "btn-sm", "btn-primary"]'></anvil-component>
+        </div>
+      </div>
+
+      <div class="cb-sec">
+        <h2>My cubes <span class="ui-badge brand"><anvil-component type="Label" name="count_label" prop:role='["inline"]'></anvil-component></span></h2>
+        <div class="cb-list">
+          <a class="cb-cube cb-new" href="#make" anvil:name="make_tile">
+            <span class="plus" aria-hidden="true">+</span><b>Make a cube</b>
+            <anvil-component type="Label" name="left_label" prop:role='["cb-small"]'></anvil-component>
+          </a>
+          <anvil-component type="RepeatingPanel" name="cubes_panel" prop:item_template="QuickyBricks.Items.CubeTile" prop:role='["contents"]'></anvil-component>
+        </div>
+      </div>
+
+      <div class="cb-sec" anvil:name="news_part">
+        <h2>Meanwhile in the World</h2>
+        <anvil-component type="RepeatingPanel" name="news_panel" prop:item_template="QuickyBricks.Items.NewsRow" prop:role='["cb-news"]'></anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

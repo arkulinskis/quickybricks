@@ -1,0 +1,32 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap page-shop">
+      <div class="ui-page-head">
+        <div>
+          <h1>Sparkle Shop</h1>
+          <p class="page-lead-p">Spend the sparkles your cubes earn by rolling.</p>
+        </div>
+        <anvil-component type="Label" name="sparkles" prop:role='["qb-sparkles", "big"]'></anvil-component>
+      </div>
+      <div class="ui-card tight sh-earn-card">
+        <h2 class="sh-earn-h">How to earn sparkles</h2>
+        <anvil-component type="RepeatingPanel" name="earn_panel" prop:item_template="QuickyBricks.Items.EarnChip" prop:role='["sh-earn"]'></anvil-component>
+      </div>
+      <div class="sh-sec">
+        <h2>🎩 Hats</h2>
+        <p class="sh-lead">Buy once, then dress up any cube on its card.</p>
+        <anvil-component type="RepeatingPanel" name="hats_panel" prop:item_template="QuickyBricks.Items.ShopItem" prop:role='["sh-grid"]'></anvil-component>
+      </div>
+      <div class="sh-sec">
+        <h2>🧸 Cubby toys</h2>
+        <p class="sh-lead">They show up around your play mat.</p>
+        <anvil-component type="RepeatingPanel" name="toys_panel" prop:item_template="QuickyBricks.Items.ShopItem" prop:role='["sh-grid"]'></anvil-component>
+      </div>
+      <div class="sh-sec">
+        <h2>🧪 Supplies</h2>
+        <p class="sh-lead">Use them from a cube's card.</p>
+        <anvil-component type="RepeatingPanel" name="supplies_panel" prop:item_template="QuickyBricks.Items.ShopItem" prop:role='["sh-grid"]'></anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,60 @@
+<anvil-form layout="QuickyBricks.Layouts.Shell">
+  <anvil-block slot="content">
+    <div class="ui-wrap page-make">
+      <div class="ui-wrap-narrow ui-empty" anvil:name="full_part">
+        <div class="ui-empty-em" aria-hidden="true">✋✋</div>
+        <h1 class="mk-full-h">You've made all 10 hand-made cubes!</h1>
+        <p>More cubes come from holding hands. Send a cube with a full heart to the World and find a friend.</p>
+        <div class="ui-row ui-row-center">
+          <a class="ui-btn primary" href="#world">🏝️ Go to the World</a>
+          <a class="ui-btn" href="#cubby">My Cubby</a>
+        </div>
+      </div>
+
+      <div anvil:name="maker_part">
+        <div class="ui-page-head">
+          <div>
+            <anvil-component type="Label" name="title" prop:role='["page-title"]'></anvil-component>
+            <anvil-component type="Label" name="lead" prop:role='["page-lead"]'></anvil-component>
+          </div>
+        </div>
+        <div class="mk">
+          <div class="mk-preview">
+            <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="mk-stage"></anvil-component>
+            <p class="mk-tip">Tap or swipe the cube to roll it around!</p>
+          </div>
+          <div class="mk-steps">
+            <div class="ui-card mk-step" anvil:name="color_step">
+              <h2 class="mk-h"><span class="n" aria-hidden="true"></span>Pick a colour</h2>
+              <anvil-component type="RepeatingPanel" name="color_panel" prop:item_template="QuickyBricks.Items.Swatch" prop:role='["mk-colors"]'></anvil-component>
+            </div>
+            <div class="ui-card mk-step" anvil:name="eyes_step">
+              <h2 class="mk-h"><span class="n" aria-hidden="true"></span>Pick eyes</h2>
+              <anvil-component type="RepeatingPanel" name="eyes_panel" prop:item_template="QuickyBricks.Items.FaceOption" prop:role='["mk-opts"]'></anvil-component>
+            </div>
+            <div class="ui-card mk-step" anvil:name="mouth_step">
+              <h2 class="mk-h"><span class="n" aria-hidden="true"></span>Pick a mouth</h2>
+              <anvil-component type="RepeatingPanel" name="mouth_panel" prop:item_template="QuickyBricks.Items.FaceOption" prop:role='["mk-opts"]'></anvil-component>
+            </div>
+            <div class="ui-card mk-step">
+              <h2 class="mk-h"><span class="n" aria-hidden="true"></span>Doodle on the face <small>(optional)</small></h2>
+              <anvil-component type="QuickyBricks.Components.DrawPad" name="pad"></anvil-component>
+            </div>
+            <div class="ui-card mk-step">
+              <h2 class="mk-h"><span class="n" aria-hidden="true"></span>Name it</h2>
+              <div class="mk-name">
+                <anvil-component type="TextBox" name="name_box"></anvil-component>
+                <anvil-component type="Button" name="dice_button" prop:text="🎲" prop:role='["btn"]' prop:tooltip="Random name"></anvil-component>
+              </div>
+              <p class="ui-hint">2 to 14 letters. Be nice!</p>
+            </div>
+            <div class="mk-go">
+              <a class="ui-btn ghost" href="#cubby" anvil:name="cancel_link">Cancel</a>
+              <anvil-component type="Button" name="save_button" prop:role='["btn", "btn-primary", "btn-lg"]'></anvil-component>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>
