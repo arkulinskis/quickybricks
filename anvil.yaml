@@ -474,10 +474,9 @@ db_schema:
     server: full
     title: Users
 metadata:
-  description: Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other players' cubes to make cube
-    babies. A silly browser game to play with a grown-up.
-  logo_img: asset:icon-512.png
-  title: 'QuickyBricks: a silly 3D cube game for kids and grown-ups'
+  description: "Roll, doodle and hatch a giggly family of squishy 3D cubes. Hold hands with other players' cubes to make cube babies. A silly browser game to play with a grown-up."
+  logo_img: "asset:icon-512.png"
+  title: "QuickyBricks: a silly 3D cube game for kids and grown-ups"
 name: QuickyBricks
 native_deps:
   head_html: |
