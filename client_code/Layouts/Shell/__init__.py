@@ -5,7 +5,7 @@ import anvil.js
 from anvil.js import window
 
 from ._anvil_designer import ShellTemplate
-from ... import auth, router, state
+from ... import auth, bedtime, router, state
 
 THEMES = ["auto", "light", "dark"]
 
@@ -23,6 +23,8 @@ class Shell(ShellTemplate):
         self.copyright_label.text = "© %d QuickyBricks" % datetime.date.today().year
         self._outside = anvil.js.report_exceptions(self._close_menu_outside)
         self._keys = anvil.js.report_exceptions(self._key)
+        self.sleep_screen.visible = False
+        self.dom_nodes["timer_btn"].addEventListener("click", anvil.js.report_exceptions(self._timer_click))
         self.refresh("")
 
     def refresh(self, page):
@@ -43,6 +45,16 @@ class Shell(ShellTemplate):
             self.menu_email.text = me.get("email") or ""
             self.admin_link.visible = bool(me.get("is_admin"))
         self._show_theme()
+        bedtime.attach(self)  # the ⏰ button and the sleep screen (Tuck-in Time)
+
+    # ---- Tuck-in Time (client_code/bedtime.py)
+    def _timer_click(self, event):
+        self.menu.visible = False
+        bedtime.open_timer()
+
+    @handle("wake_hold", "held")
+    def wake_hold_held(self, **event_args):
+        bedtime.wake()
 
     # ---- account menu
     @handle("avatar_button", "click")
@@ -61,6 +73,7 @@ class Shell(ShellTemplate):
     def form_show(self, **event_args):
         window.document.addEventListener("click", self._outside, True)
         window.document.addEventListener("keydown", self._keys)
+        bedtime.start()
 
     @handle("", "hide")
     def form_hide(self, **event_args):

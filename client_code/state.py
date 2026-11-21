@@ -40,6 +40,10 @@ def toast(message, kind=None):
     except TypeError:  # the open-source App Server 1.18 has no `role` yet: its older `style` gives the same classes
         n = Notification(message, timeout=timeout, style={"ok": "success", "error": "danger"}.get(kind or "", "info"))
     n.show()
+    try:
+        window.QBP.sayIf(str(message))  # Read to me (Play Together mode) reads messages out loud
+    except Exception:
+        pass
 
 
 def call(fn, *args):

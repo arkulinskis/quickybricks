@@ -8,6 +8,7 @@
           <anvil-component type="Label" name="total_badge" prop:role='["badge"]'></anvil-component>
           <anvil-component type="Label" name="handmade_badge" prop:role='["badge"]'></anvil-component>
           <anvil-component type="Button" name="gift_button" prop:text="🎁 Daily gift!" prop:role='["btn", "btn-sm", "btn-lemon", "wiggle"]'></anvil-component>
+          <anvil-component type="Button" name="dream_button" prop:text="💭 Dream gift!" prop:role='["btn", "btn-sm", "btn-mint"]' prop:tooltip="Your cubes dreamt something after bedtime"></anvil-component>
           <anvil-component type="Label" name="streak_badge" prop:role='["badge"]' prop:tooltip="Daily streak"></anvil-component>
         </div>
       </div>
@@ -20,7 +21,13 @@
       </div>
 
       <div class="cb-play" anvil:name="play_part">
-        <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cb-stage"></anvil-component>
+        <div class="qb-stagebox cb-stagebox">
+          <div class="qb-stagebox-in">
+            <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cb-stage"></anvil-component>
+            <anvil-component type="QuickyBricks.Components.MoveCard" name="move_card"></anvil-component>
+          </div>
+          <anvil-component type="QuickyBricks.Components.TogetherBar" name="together_bar"></anvil-component>
+        </div>
         <div class="cb-side">
           <div class="ui-card cb-sel">
             <p class="cb-sel-none" anvil:name="sel_none">Tap a cube to pick it, then roll it!</p>

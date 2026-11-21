@@ -4,7 +4,7 @@ from anvil import *
 from anvil.js import window
 
 from ._anvil_designer import LandingTemplate
-from ... import qb, state
+from ... import moves, qb, state
 
 # The app's video on the Addanapp YouTube channel (APP_MAKER/youtube/manifest.json), shown in the Watch section.
 YT_VIDEO = "7AX1pujnTy0"
@@ -121,6 +121,12 @@ class Landing(LandingTemplate):
                 c.flash()
         s = self.d["sparkles"]
         self.earn_label.text = ("Nice roll! %d ✨ practice sparkles" % s) if self.me else ("You'd have %d ✨ by now. Sign up to keep them!" % s)
+        self.move_card.show_for(res)  # Play together: the Silly Move for whoever's turn it is
+
+    @handle("paper_button", "click")
+    def paper_button_click(self, **event_args):
+        """Paper Cube: this browser's playground cube as a print-and-fold PNG (no account needed)."""
+        qb.paper_cube(self.d, moves.sheet())
 
     # ---- live numbers and the video
     def _pulse(self):

@@ -1,0 +1,24 @@
+---
+custom_component: true
+properties: []
+toolbox_item:
+  title: Silly Move card
+  group: QuickyBricks
+help_text: |
+  Play Together mode's sticker card over a 3D stage. After a roll, show_for(result) pops the Silly Move for whoever's
+  turn it is (client_code/moves.py); Done flips the turn. It hides by itself after a few seconds and never covers the
+  d-pad (it sits at the top of the stage box).
+---
+<div class="qb-movecard-host" aria-live="polite">
+  <div class="qb-movecard" anvil:dom-node="card">
+    <div class="qb-mc-em" anvil:dom-node="em" aria-hidden="true"></div>
+    <div class="qb-mc-body">
+      <div class="qb-mc-label" anvil:dom-node="label"></div>
+      <div class="qb-mc-text" anvil:dom-node="text"></div>
+      <div class="qb-mc-foot">
+        <div class="qb-mc-turn" anvil:dom-node="turn"></div>
+        <anvil-component type="Button" name="done_button" prop:text="Done ✅" prop:role='["btn", "btn-sm", "btn-mint"]'></anvil-component>
+      </div>
+    </div>
+  </div>
+</div>

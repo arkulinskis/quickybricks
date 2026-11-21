@@ -86,6 +86,10 @@ def current():
 
 def show():
     """Open the page for the current address."""
+    try:
+        window.QBP.hush()  # Read to me: stop talking about the page we're leaving
+    except Exception:
+        pass
     asked = parse(window.location.hash)[0]
     name, args = parse(window.location.hash)
     if name not in PAGES:

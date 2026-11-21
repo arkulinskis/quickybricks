@@ -193,7 +193,7 @@ bad(call("claim_gift"), "one gift a day")
 ana["last_gift"] = ana["last_gift"] - dt.timedelta(days=1)
 assert ok(call("claim_gift"))["streak"] == 2, "the streak grows day after day"
 ana["last_gift"] = ana["last_gift"] - dt.timedelta(days=3)
-assert ok(call("claim_gift"))["streak"] == 1, "a missed day starts again"
+assert ok(call("claim_gift"))["streak"] == 3, "a missed day keeps the streak (gentle streak, 2026-11-20)"
 shop = call("get_shop")
 assert any(i["key"] == "crown" for i in shop["items"])
 bad(call("buy", "spaceship"))

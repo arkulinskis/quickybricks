@@ -5,7 +5,7 @@ from anvil import *
 from anvil.js import window
 
 from ._anvil_designer import WorldTemplate
-from ... import qb, router, state
+from ... import bedtime, qb, router, state
 
 
 def why_not(them, mine, hand_dist):
@@ -88,6 +88,9 @@ class World(WorldTemplate):
 
     def _poll(self):
         if not self._alive:
+            return
+        if bedtime.asleep():  # Tuck-in Time: the cubes sleep, nobody needs World news
+            self._timers.append(window.setTimeout(self._poll, 15000))
             return
         fresh = state.call_quiet("get_world")
         if not self._alive:

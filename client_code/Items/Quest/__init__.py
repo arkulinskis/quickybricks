@@ -1,7 +1,7 @@
 from anvil import *
 
 from ._anvil_designer import QuestTemplate
-from ... import state
+from ... import moves, state
 
 
 class Quest(QuestTemplate):
@@ -22,6 +22,13 @@ class Quest(QuestTemplate):
         self.claim_button.enabled = bool(it.get("done"))
         self.claim_button.role = ["btn", "btn-sm", "btn-lemon"] if it.get("done") else ["btn", "btn-sm"]
         state.set_control_attr(self.claim_button, "aria-label", "Claim %d sparkles" % it["sparkles"])
+        self.say_button.visible = moves.readaloud()  # Read to me: tap 🔊 to hear the quest
+        state.set_control_attr(self.say_button, "aria-label", "Read this quest out loud")
+
+    @handle("say_button", "click")
+    def say_button_click(self, **event_args):
+        it = self.item
+        moves.say("%s. %d of %d done." % (it["text"], it["progress"], it["goal"]))
 
     @handle("claim_button", "click")
     def claim_button_click(self, **event_args):

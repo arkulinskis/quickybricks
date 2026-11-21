@@ -253,8 +253,8 @@
     sync: function () {
       var M = window.ArkMusic;
       if (!M) return;
-      if (QB.music.live > 0 && !QB.muted()) M.play(QB.MUSIC, { volume: 0.32, shuffle: true });
-      else M.stop();
+      if (QB.music.live > 0 && !QB.muted() && !QB.paused) M.play(QB.MUSIC, { volume: 0.32, shuffle: true });
+      else M.stop(QB.paused ? 2.5 : null);   // bedtime: a slow fade
     },
     add: function () { QB.music.live++; QB.music.sync(); },
     remove: function () { QB.music.live = Math.max(0, QB.music.live - 1); setTimeout(QB.music.sync, 600); }
@@ -285,6 +285,9 @@
     else if (name === 'baby') { [523, 659, 784, 659, 1047].forEach(function (f, i) { tone('triangle', f, f, .2, .12, i * .13); }); }
     else if (name === 'chat') tone('sine', 900, 1300, .08, .08);
     else if (name === 'snap') { tone('square', 1800, 900, .05, .06); tone('square', 1200, 600, .06, .05, .07); }
+    else if (name === 'tuck') { tone('sine', 520, 300, .22, .09); tone('sine', 390, 260, .3, .05, .12); }   // a soft, sleepy pop
+    else if (name === 'night') { [784, 659, 523, 392].forEach(function (f, i) { tone('sine', f, f, .5, .06, i * .28); }); }   // goodnight chime
+    else if (name === 'done') { [523, 784].forEach(function (f, i) { tone('triangle', f, f, .16, .1, i * .09); }); }
   };
 
   QB.confetti = function (n) {
@@ -316,7 +319,7 @@
     var map = { ArrowUp: 'N', ArrowDown: 'S', ArrowLeft: 'W', ArrowRight: 'E', w: 'N', s: 'S', a: 'W', d: 'E', W: 'N', S: 'S', A: 'W', D: 'E' };
     function k(e) {
       if (!map[e.key] || (active && !active())) return;
-      var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) || document.querySelector('.ui-modal-wrap') || document.body.classList.contains('modal-open')) return;
+      var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) || document.querySelector('.ui-modal-wrap') || document.body.classList.contains('modal-open') || document.body.classList.contains('qb-asleep')) return;
       e.preventDefault(); onDir(map[e.key]);
     }
     document.addEventListener('keydown', k);
@@ -436,18 +439,25 @@
     g.computeBoundingSphere();
     return (GEO[size] = g);
   }
+  /* One side's picture (spring 0, cloud 1, heart 2, cupcake 3, swirl 5; the face side 4 has none) in a size x size box
+     at (x, y). ink = one colour for fill and lines (the Paper Cube); without it, the soft greys of the 3D sides. */
+  QB.paintIcon = function (c, f, x, y, size, ink) {
+    c.save(); c.translate(x, y); c.scale(size / 128, size / 128);
+    c.fillStyle = ink || '#d2d2d2'; c.strokeStyle = ink || '#bdbdbd'; c.lineWidth = 7; c.lineCap = 'round'; c.lineJoin = 'round';
+    if (f === 0) { c.beginPath(); for (var i = 0; i <= 8; i++) c.lineTo(i % 2 ? 84 : 44, 30 + i * 8.5); c.lineWidth = 9; c.strokeStyle = ink || '#c4c4c4'; c.stroke(); }
+    else if (f === 1) { c.beginPath(); c.arc(48, 72, 20, 0, 7); c.arc(66, 58, 24, 0, 7); c.arc(86, 72, 18, 0, 7); c.fill(); c.fillRect(48, 70, 40, 22); }
+    else if (f === 2) { heart(c, 64, 78, 40); c.fill(); }
+    else if (f === 3) { c.beginPath(); c.moveTo(38, 66); c.lineTo(90, 66); c.lineTo(82, 100); c.lineTo(46, 100); c.closePath(); c.fill(); c.beginPath(); c.arc(64, 64, 28, Math.PI, 0); c.fill(); c.beginPath(); c.arc(64, 30, 8, 0, 7); c.fill(); }
+    else if (f === 5) { c.beginPath(); for (var j = 0; j < 70; j++) { var a = j * .3, rr = 3 + j * .5; c.lineTo(64 + Math.cos(a) * rr, 64 + Math.sin(a) * rr); } c.lineWidth = 8; c.strokeStyle = ink || '#c4c4c4'; c.stroke(); }
+    c.restore();
+  };
   function iconTextures(T) {
     if (ICON_TEX) return ICON_TEX;
     ICON_TEX = [0, 1, 2, 3, 4, 5].map(function (f) {
       var cv = document.createElement('canvas'); cv.width = cv.height = 128;
       var c = cv.getContext('2d');
       c.fillStyle = '#ffffff'; c.fillRect(0, 0, 128, 128);
-      c.fillStyle = '#d2d2d2'; c.strokeStyle = '#bdbdbd'; c.lineWidth = 7; c.lineCap = 'round'; c.lineJoin = 'round';
-      if (f === 0) { c.beginPath(); for (var i = 0; i <= 8; i++) c.lineTo(i % 2 ? 84 : 44, 30 + i * 8.5); c.lineWidth = 9; c.strokeStyle = '#c4c4c4'; c.stroke(); }
-      else if (f === 1) { c.beginPath(); c.arc(48, 72, 20, 0, 7); c.arc(66, 58, 24, 0, 7); c.arc(86, 72, 18, 0, 7); c.fill(); c.fillRect(48, 70, 40, 22); }
-      else if (f === 2) { heart(c, 64, 78, 40); c.fill(); }
-      else if (f === 3) { c.beginPath(); c.moveTo(38, 66); c.lineTo(90, 66); c.lineTo(82, 100); c.lineTo(46, 100); c.closePath(); c.fill(); c.beginPath(); c.arc(64, 64, 28, Math.PI, 0); c.fill(); c.beginPath(); c.arc(64, 30, 8, 0, 7); c.fill(); }
-      else if (f === 5) { c.beginPath(); for (var j = 0; j < 70; j++) { var a = j * .3, rr = 3 + j * .5; c.lineTo(64 + Math.cos(a) * rr, 64 + Math.sin(a) * rr); } c.lineWidth = 8; c.strokeStyle = '#c4c4c4'; c.stroke(); }
+      QB.paintIcon(c, f, 0, 0, 128);
       var t = new T.CanvasTexture(cv); t.colorSpace = T.SRGBColorSpace; return t;
     });
     return ICON_TEX;
@@ -581,7 +591,7 @@
     if (window.ResizeObserver) { this._ro = new ResizeObserver(this._resize); this._ro.observe(container); } else window.addEventListener('resize', this._resize);
     this.resize();
     this._input();
-    this._loop = function () { if (self.dead) return; self.raf = requestAnimationFrame(self._loop); self.frame(); };
+    this._loop = function () { if (self.dead) return; self.raf = requestAnimationFrame(self._loop); if (!QB.paused) self.frame(); };   // QB.paused: the cubes are asleep (Tuck-in Time)
     this.raf = requestAnimationFrame(this._loop);
     if (opts.snap) {
       var snap = document.createElement('button'); snap.type = 'button'; snap.className = 'qb-sound qb-snap'; snap.setAttribute('aria-label', 'Take a photo'); snap.textContent = '📸';

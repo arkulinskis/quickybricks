@@ -5,7 +5,7 @@ from anvil import *
 from anvil.js import window
 
 from ._anvil_designer import CubeTemplate
-from ... import qb, router, state
+from ... import moves, qb, router, state
 
 
 class Cube(CubeTemplate):
@@ -33,6 +33,7 @@ class Cube(CubeTemplate):
         self._info()
         self._family()
         c = self.c
+        self.together_bar.visible = bool(c["mine"])
         if c["mine"]:
             self.stage.mount("hero", c, {"where": "home", "keys": True, "smallPad": True, "dist": 0.85 if c["grown"] else 0.7,
                                          "season": False, "onResult": self._rolled}, pad=self.dom_nodes["pad"])
@@ -107,6 +108,7 @@ class Cube(CubeTemplate):
         if self.me is not None and res.get("sparkles") is not None:
             self.me["sparkles"] = res["sparkles"]
         self._info()
+        self.move_card.show_for(res)  # Play together: the Silly Move for whoever's turn it is
 
     # ---- clicks
     def _hat(self, key, **event_args):
@@ -164,6 +166,12 @@ class Cube(CubeTemplate):
     @handle("poster_button", "click")
     def poster_button_click(self, **event_args):
         qb.QBP.poster(qb.js_value(self.c))
+
+    @handle("paper_button", "click")
+    def paper_button_click(self, **event_args):
+        """Paper Cube: this cube as a print-and-fold PNG (own cubes only: the button is in the owner's part)."""
+        if self.c.get("mine"):
+            qb.paper_cube(self.c, moves.sheet())
 
     @handle("report_button", "click")
     def report_button_click(self, **event_args):

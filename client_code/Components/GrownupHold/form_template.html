@@ -1,0 +1,19 @@
+---
+custom_component: true
+properties:
+  - name: text
+    type: string
+    default_value: "Grown-ups: hold for 3 seconds"
+    description: What the button says
+    default_binding_prop: true
+events:
+  - name: held
+    description: Someone kept the button pressed for 3 seconds (a grown-up)
+toolbox_item:
+  title: Grown-up hold
+  group: QuickyBricks
+help_text: |
+  A press-and-hold button for grown-up-only actions (stop or change the play timer, wake the cubes up). It fills up
+  while held; letting go early cancels. Works with a finger, a mouse, or Space / Enter held down. No PIN is stored.
+---
+<div class="qb-hold-wrap"><button type="button" class="qb-hold" anvil:dom-node="btn"><span class="qb-hold-fill" aria-hidden="true"></span><span class="qb-hold-txt" anvil:dom-node="txt"></span></button></div>

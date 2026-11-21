@@ -42,13 +42,43 @@ def today():
 
 
 def gift_info(u):
+    """The daily gift. A gentle streak (2026-11-20): a missed day doesn't reset it, it just waits; the amount grows for
+    7 days and then stays at the top (no reason to come back every single day)."""
     last = u["last_gift"]
     ready = last is None or last < today()
     streak = u["streak"] or 0
-    if last is not None and last < today() - dt.timedelta(days=1):
-        streak = 0   # missed a day: the streak starts again
     nxt = min(streak + 1, 7) if ready else min(streak, 7)
     return {"ready": ready, "streak": streak, "amount": 10 + 5 * nxt}
+
+
+# ------------------------------------------------------------------------------------------- Tuck-in Time
+DREAM_WAIT = 6 * 3600     # seconds between tucking in and the Dream gift (it's for the next morning)
+
+
+def local_day(day=None):
+    """The player's own calendar day as the browser sends it ('YYYY-MM-DD'), trusted only within a day of the
+    server's (time zones); anything else = the server's day."""
+    t = today()
+    try:
+        d = dt.date.fromisoformat(str(day)[:10])
+    except Exception:
+        return t
+    return d if abs((d - t).days) <= 1 else t
+
+
+def dream_info(u, day=None):
+    """{ready, pending}: a Dream gift waits when the player tucked their cubes in on an earlier day of their own
+    calendar and at least DREAM_WAIT has passed. Kept in users.inventory (dream_day, dream_at): no new column."""
+    inv = inventory(u)
+    d, at = inv.get("dream_day"), inv.get("dream_at")
+    if not d:
+        return {"ready": False, "pending": False}
+    try:
+        since = (C.now() - dt.datetime.fromisoformat(str(at))).total_seconds() if at else DREAM_WAIT
+    except Exception:
+        since = DREAM_WAIT
+    ready = str(d) < local_day(day).isoformat() and since >= DREAM_WAIT
+    return {"ready": ready, "pending": not ready}
 
 
 def handmade_count(u):
@@ -131,8 +161,9 @@ def recent_happenings(n=8):
 
 # ------------------------------------------------------------------------------------------- callables
 @anvil.server.callable(require_user=True)
-def get_cubby():
-    """The player's own space: every cube they own, their sparkles, gift and items."""
+def get_cubby(day=None):
+    """The player's own space: every cube they own, their sparkles, gift and items. day = the browser's date (for
+    the Dream gift)."""
     DemoData.ensure_loaded()
     me = player(C.require_user())
     rows = app_tables.cubes.search(tables.order_by("born", ascending=True), owner=me)
@@ -142,7 +173,8 @@ def get_cubby():
         d["parents"] = [tiny(p) for p in (c["parent_a"], c["parent_b"]) if p is not None]
         surprises.append(d)
     return {"me": stats(me), "cubes": [cube_dict(c, me) for c in rows[:R.MAX_CUBES]],
-            "happenings": recent_happenings(5), "colors": R.CREATE_COLORS, "quests": Q.view(me), "surprises": surprises}
+            "happenings": recent_happenings(5), "colors": R.CREATE_COLORS, "quests": Q.view(me), "surprises": surprises,
+            "dream": dream_info(me, day)}
 
 
 @anvil.server.callable(require_user=True)
@@ -369,6 +401,51 @@ def claim_gift():
     me.update(last_gift=today(), streak=g["streak"] + 1)
     total = add_sparkles(me, 10 + 5 * streak)
     return C.ok(amount=10 + 5 * streak, streak=g["streak"] + 1, sparkles=total)
+
+
+@anvil.server.callable(require_user=True)
+def tuck_in(day=None):
+    """Bedtime (the grown-up's play timer ran out): up to 6 of the player's cubes for the tuck-in dialog, and
+    tonight's dream. dream: "new" (a Dream gift tomorrow), "today" (already tucked in today) or "waiting" (an earlier
+    Dream gift is still in the Cubby). Tucking in again before claiming changes nothing."""
+    me = player(C.require_user())
+    if C.rate_limited("tuck", 12, 3600):
+        return C.fail("Shh, the cubes are already asleep.")
+    inv = inventory(me)
+    d = local_day(day).isoformat()
+    if not inv.get("dream_day"):
+        inv.update(dream_day=d, dream_at=C.now().isoformat())
+        me["inventory"] = inv
+        dream = "new"
+    else:
+        dream = "today" if str(inv["dream_day"]) >= d else "waiting"
+    rows = sorted(app_tables.cubes.search(owner=me), key=lambda c: C.iso(c["last_active"] or c["born"]) or "", reverse=True)
+    return C.ok(cubes=[tiny(c) for c in rows[:6]], dream=dream)
+
+
+@anvil.server.callable(require_user=True)
+def claim_dream(day=None):
+    """The Dream gift, the morning after a tuck-in: 12-25 sparkles, or 1 time in 4 a hat the player doesn't own yet
+    ("Bubbles dreamt about a Crown!"). Once per tuck-in."""
+    me = player(C.require_user())
+    if C.rate_limited("dream", 10, 60):
+        return C.fail("One dream at a time!")
+    if not dream_info(me, day)["ready"]:
+        return C.fail("No dream yet. Tuck your cubes in at bedtime, then come back tomorrow!")
+    inv = inventory(me)
+    inv.pop("dream_day", None)
+    inv.pop("dream_at", None)
+    missing = [k for k, _, _ in R.HATS if k not in (inv.get("hats") or [])]
+    hat = R.RNG.choice(missing) if missing and R.RNG.random() < 0.25 else ""
+    amount = 0 if hat else R.RNG.randint(12, 25)
+    if hat:
+        inv["hats"] = list(inv.get("hats") or []) + [hat]
+    me["inventory"] = inv
+    total = add_sparkles(me, amount)
+    names = [c["name"] for c in app_tables.cubes.search(owner=me) if c["name"]]
+    hat_names = {k: n for k, n, _ in R.HATS}
+    return C.ok(hat=hat, hat_name=hat_names.get(hat, ""), amount=amount, sparkles=total,
+                dreamer=R.RNG.choice(names) if names else "Your cube")
 
 
 @anvil.server.callable(require_user=True)

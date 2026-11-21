@@ -8,7 +8,8 @@
       (cards, lists, dialogs) and hears back through hooks (plain callbacks; data as JSON text).
       Components/Stage mounts a controller when its page appears and calls destroy() when it goes.
    3. Small drawings Python asks for: QBP.thumb (a cube thumbnail on a canvas), QBP.face (a flat face),
-      QBP.cubedex (the 10x10 face grid), QBP.poster (the family poster PNG). */
+      QBP.cubedex (the 10x10 face grid), QBP.poster (the family poster PNG), QBP.papercraft (the Paper Cube PNG).
+   4. Read to me: QBP.canSay / readAloud / say / sayIf / hush (the browser's speech voice; Play Together mode). */
 (function () {
   'use strict';
   var UI = window.UI = window.UI || {};
@@ -126,6 +127,158 @@
     }
     var im = c.drawing ? QB.img(c.drawing) : null;
     if (im && !im.complete) im._wait.push(go); else go();
+  };
+
+  /* ------------------------------------------------------------------ Read to me (client_code/moves.py turns it on)
+     The browser's own speech voice (speechSynthesis): a voice that runs on this device when there is one, English,
+     a little slower than normal. Emoji are dropped before speaking. QBP.canSay() is false where there is no speech
+     (the toggle hides); QBP.sayIf speaks only while Read to me is on; QBP.hush stops (router.show calls it). */
+  var VOICE = null, EMOJI = /[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{2460}-\u{27BF}\u{2900}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}]/gu;
+  QBP.canSay = function () { return typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance === 'function'; };
+  QBP.readAloud = function () { return QBP.canSay() && !!UI.store.get('readaloud', false); };
+  function pickVoice() {
+    var list = [];
+    try { list = window.speechSynthesis.getVoices() || []; } catch (e) { return null; }
+    if (VOICE && list.indexOf(VOICE) >= 0) return VOICE;
+    var mine = list.filter(function (v) { return v.localService && /^en([-_]|$)/i.test(v.lang || ''); });
+    VOICE = mine.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0] || mine.filter(function (v) { return /^en[-_]GB/i.test(v.lang); })[0] || mine[0] || null;
+    return VOICE;
+  }
+  QBP.say = function (text) {
+    if (!QBP.canSay()) return false;
+    var clean = String(text == null ? '' : text).replace(EMOJI, ' ').replace(/\s+/g, ' ').trim();
+    if (!clean) return false;
+    var syn = window.speechSynthesis;
+    function go() {
+      try {
+        var u = new window.SpeechSynthesisUtterance(clean), v = pickVoice();
+        u.lang = v ? v.lang : 'en-US'; if (v) u.voice = v;
+        u.rate = .95; u.pitch = 1.08;
+        syn.speak(u);
+      } catch (e) { /* no voice: stay quiet */ }
+    }
+    try {
+      if (syn.speaking || syn.pending) { syn.cancel(); setTimeout(go, 60); }   // Chrome drops a speak() right after cancel()
+      else go();
+    } catch (e) { return false; }
+    return true;
+  };
+  QBP.sayIf = function (text) { return QBP.readAloud() ? QBP.say(text) : false; };
+  QBP.hush = function () { try { if (QBP.canSay()) window.speechSynthesis.cancel(); } catch (e) { /* nothing to stop */ } };
+  /* Dates for Tuck-in Time (client_code/bedtime.py): this device's calendar day and a clock time. */
+  function two(n) { return (n < 10 ? '0' : '') + n; }
+  QBP.today = function () { var d = new Date(); return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate()); };
+  QBP.clock = function (ms) { try { return new Date(ms).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; } };
+  if (QBP.canSay()) { try { window.speechSynthesis.addEventListener('voiceschanged', function () { VOICE = null; }); } catch (e) { /* old browser */ } }
+
+  /* ------------------------------------------------------------------ Paper Cube: print, cut, fold, roll
+     The cube as a fold-up net on one A4 sheet (1654 x 2339 px = 200 dpi). Everything sits inside the top 2150 px and
+     the A4 width, so it also prints whole on US Letter. The net follows the game's start orientation (QB.START
+     235401): a column of heart (top), face (front), cupcake (bottom), swirl (back), with the cloud left of the face
+     and the spring right of it, so the folded cube's opposite sides match the 3D cube (spring/cloud, heart/cupcake,
+     face/swirl). moves = [{face, key, emoji, label, move}] from client_code/moves.py (the Silly Moves live there). */
+  QBP.papercraft = function (c, moves) {
+    var W = 1654, H = 2339, S = 340, TAB = 66, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var g = cv.getContext('2d'), INKC = '#3b2a5a', col = c.color || '#ff5fa2';
+    var sideInk = QB.lum(col) < 0.3 ? QB.shade(col, .6) : QB.shade(col, -.45);
+    var faceInk = QB.lum(col) < 0.3 ? '#fff4e0' : '#2b1d45';
+    var X0 = (W - 3 * S) / 2, Y0 = 250, byFace = {};
+    (moves || []).forEach(function (m) { byFace[m.face] = m; });
+    // [face id, column, row, upside down]; tabs: which edges carry a glue tab (n/s/e/w of that square)
+    var CELLS = [[2, 1, 0], [4, 1, 1], [3, 1, 2], [5, 1, 3, true], [1, 0, 1], [0, 2, 1]];
+    var TABS = { 1: ['n', 's', 'w'], 0: ['n', 's', 'e'], 5: ['s'] };
+    function cell(f) { for (var i = 0; i < CELLS.length; i++) if (CELLS[i][0] === f) return CELLS[i]; return null; }
+    function at(cx, cy) { for (var i = 0; i < CELLS.length; i++) if (CELLS[i][1] === cx && CELLS[i][2] === cy) return CELLS[i]; return null; }
+    function edge(cx, cy, d) {   // the two corners of one side of a square, in pixels
+      var x = X0 + cx * S, y = Y0 + cy * S;
+      return d === 'n' ? [x, y, x + S, y] : d === 's' ? [x, y + S, x + S, y + S] : d === 'w' ? [x, y, x, y + S] : [x + S, y, x + S, y + S];
+    }
+    var OUT = { n: [0, -1], s: [0, 1], w: [-1, 0], e: [1, 0] }, NB = { n: [0, -1], s: [0, 1], w: [-1, 0], e: [1, 0] };
+    function fit(text, maxW, px, family) {   // shrink the font until the text fits
+      var size = px;
+      do { g.font = family.replace('#', size); size -= 2; } while (g.measureText(text).width > maxW && size > 16);
+    }
+    function line(x1, y1, x2, y2, dashed) {
+      g.save(); g.strokeStyle = INKC; g.lineCap = 'round'; g.lineWidth = dashed ? 4 : 5; g.setLineDash(dashed ? [18, 12] : []);
+      g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.restore();
+    }
+    function go() {
+      g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+      g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillStyle = INKC;
+      fit('Paper ' + (c.name || 'cube') + '!', W - 200, 84, '#px "Lilita One", sans-serif');
+      g.fillText('Paper ' + (c.name || 'cube') + '!', W / 2, 128);
+      g.font = '600 34px "Baloo 2", sans-serif'; g.fillStyle = '#6e5e8c';
+      g.fillText('✂️ Cut on the solid lines  ·  fold on the dashed lines  ·  glue the tabs', W / 2, 188);
+      // glue tabs (drawn first, under the squares' edges)
+      Object.keys(TABS).forEach(function (fk) {
+        var ce = cell(+fk);
+        TABS[fk].forEach(function (d) {
+          var e = edge(ce[1], ce[2], d), o = OUT[d], tx = (e[2] - e[0]) / S, ty = (e[3] - e[1]) / S, k = TAB * .62;
+          var p = [[e[0], e[1]], [e[0] + o[0] * TAB + tx * k, e[1] + o[1] * TAB + ty * k], [e[2] + o[0] * TAB - tx * k, e[3] + o[1] * TAB - ty * k], [e[2], e[3]]];
+          g.beginPath(); g.moveTo(p[0][0], p[0][1]); for (var i = 1; i < 4; i++) g.lineTo(p[i][0], p[i][1]); g.closePath();
+          g.fillStyle = '#fff4e0'; g.fill();
+          for (var j = 0; j < 3; j++) line(p[j][0], p[j][1], p[j + 1][0], p[j + 1][1], false);
+          g.save(); g.translate((e[0] + e[2]) / 2 + o[0] * TAB / 2, (e[1] + e[3]) / 2 + o[1] * TAB / 2);
+          g.rotate(d === 'w' ? -Math.PI / 2 : d === 'e' ? Math.PI / 2 : 0);
+          g.fillStyle = INKC; g.globalAlpha = .75; g.font = '24px "Lilita One", sans-serif'; g.textBaseline = 'middle';
+          g.fillText('quickybricks.com', 0, 0); g.restore();
+        });
+      });
+      // the six sides
+      CELLS.forEach(function (ce) {
+        var f = ce[0], x = X0 + ce[1] * S, y = Y0 + ce[2] * S, m = byFace[f] || {};
+        g.save(); g.fillStyle = col; g.fillRect(x, y, S, S);
+        if (ce[3]) { g.translate(x + S / 2, y + S / 2); g.rotate(Math.PI); g.translate(-x - S / 2, -y - S / 2); }
+        g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+        if (f === 4) {
+          g.save(); g.translate(x, y); QB.paintFace(g, S, c); g.restore();
+          g.fillStyle = faceInk; fit(m.label || '', S - 40, 30, '#px "Lilita One", sans-serif'); g.fillText(m.label || '', x + S / 2, y + S - 18);
+        } else {
+          QB.paintIcon(g, f, x + S * .2, y + S * .08, S * .6, sideInk);
+          g.fillStyle = sideInk; fit(m.label || '', S - 36, 48, '#px "Lilita One", sans-serif'); g.fillText(m.label || '', x + S / 2, y + S * .86);
+        }
+        g.restore();
+      });
+      // fold lines (between two squares, or a square and its tab) and cut lines (everything else)
+      var done = {};
+      CELLS.forEach(function (ce) {
+        ['n', 's', 'w', 'e'].forEach(function (d) {
+          var e = edge(ce[1], ce[2], d), key = Math.min(e[0], e[2]) + ',' + Math.min(e[1], e[3]) + ',' + d.replace('s', 'n').replace('e', 'w');
+          if (done[key]) return; done[key] = 1;
+          var nb = at(ce[1] + NB[d][0], ce[2] + NB[d][1]), tab = (TABS[ce[0]] || []).indexOf(d) >= 0;
+          line(e[0], e[1], e[2], e[3], !!(nb || tab));
+        });
+      });
+      g.font = '44px serif'; g.textAlign = 'left'; g.fillStyle = INKC; g.fillText('✂️', X0 + S - 12, Y0 - 14);
+      // the Silly Moves
+      var by = Y0 + 4 * S + TAB + 40, bh = 2085 - by;
+      g.save(); g.lineWidth = 6; g.strokeStyle = INKC; g.fillStyle = '#fffaf0'; QB.rrect(g, 80, by, W - 160, bh, 36); g.fill(); g.stroke(); g.restore();
+      g.textAlign = 'center'; g.fillStyle = INKC; fit('Roll it! Whatever lands on top, do its Silly Move:', W - 260, 44, '#px "Lilita One", sans-serif');
+      g.fillText('Roll it! Whatever lands on top, do its Silly Move:', W / 2, by + 66);
+      var list = QB.FACE_EVENT.map(function (k, i) { return byFace[i]; }).filter(Boolean), colW = (W - 160 - 90) / 2;
+      list.forEach(function (mv, i) {
+        var cx = 80 + 45 + (i % 2) * (colW + 0), cy = by + 136 + Math.floor(i / 2) * 82;
+        g.textAlign = 'left'; g.font = '44px serif'; g.fillText(mv.emoji || '', cx, cy + 8);
+        var label = (mv.label || '') + ' ', rest = mv.move || '';
+        fit(label + rest, colW - 80, 32, '600 #px "Baloo 2", sans-serif');
+        var size = parseInt(g.font.match(/(\d+)px/)[1], 10);
+        g.font = size + 'px "Lilita One", sans-serif'; g.fillStyle = INKC; g.fillText(label, cx + 62, cy);
+        var lw = g.measureText(label).width;
+        g.font = '600 ' + size + 'px "Baloo 2", sans-serif'; g.fillStyle = '#4b3a6e'; g.fillText(rest, cx + 62 + lw, cy);
+        g.fillStyle = INKC;
+      });
+      g.textAlign = 'center'; g.font = '600 28px "Baloo 2", sans-serif'; g.fillStyle = '#6e5e8c';
+      g.fillText('quickybricks.com  ·  print at 100% on A4 or Letter  ·  a grown-up helps with the scissors', W / 2, 2128);
+      var a = document.createElement('a'); a.href = cv.toDataURL('image/png');
+      a.download = (String(c.name || 'my-cube').replace(/\W+/g, '-').replace(/^-+|-+$/g, '') || 'my-cube') + '-paper-cube.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      QB.confetti(40); UI.toast('🖨️ Paper cube saved to your downloads! Print it, cut, fold and roll.', 'ok');
+    }
+    var im = c.drawing ? QB.img(c.drawing) : null;
+    var fonts = (document.fonts && document.fonts.load) ? Promise.all([document.fonts.load('40px "Lilita One"'), document.fonts.load('600 30px "Baloo 2"')]) : Promise.resolve();
+    fonts.catch(function () { /* draw with fallback fonts */ }).then(function () {
+      if (im && !im.complete) im._wait.push(go); else go();
+    });
   };
 
   /* ------------------------------------------------------------------ one cube on a round mat (landing, Maker, cube card)

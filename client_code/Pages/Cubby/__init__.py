@@ -22,10 +22,11 @@ class Cubby(CubbyTemplate):
         self.sel_id = None
         state.heading(self.title, 1)
         self.cubes_panel.add_event_handler("x-pick", self._pick)
+        self.together_bar.add_event_handler("changed", self._together_changed)
         self.quests_panel.add_event_handler("x-claim", self._claim)
-        self.data = anvil.server.call("get_cubby")
+        self.data = anvil.server.call("get_cubby", qb.today())
         if self._adopt_draft():
-            self.data = anvil.server.call("get_cubby")
+            self.data = anvil.server.call("get_cubby", qb.today())
         self._draw()
         if self.data.get("surprises"):
             window.setTimeout(self._surprises, 600)
@@ -81,6 +82,7 @@ class Cubby(CubbyTemplate):
         self.gift_button.visible = bool(g["ready"])
         self.streak_badge.visible = not g["ready"]
         self.streak_badge.text = "🔥 %d-day streak" % g["streak"]
+        self.dream_button.visible = bool((self.data.get("dream") or {}).get("ready"))
 
     def _quests(self):
         q = self.data.get("quests")
@@ -146,7 +148,7 @@ class Cubby(CubbyTemplate):
         if res.get("sparkles") is not None:
             self.data["me"]["sparkles"] = res["sparkles"]
         if res.get("quests_done"):
-            fresh = state.call_quiet("get_cubby")
+            fresh = state.call_quiet("get_cubby", qb.today())
             if fresh:
                 self.data["quests"] = fresh["quests"]
                 self._quests()
@@ -154,6 +156,7 @@ class Cubby(CubbyTemplate):
         self._card()
         if (res.get("reward") or {}).get("grew"):
             self._list()
+        self.move_card.show_for(res)  # Play together: the Silly Move for whoever's turn it is
 
     # ---- clicks
     def _pick(self, cube_id, **event_args):
@@ -193,6 +196,31 @@ class Cubby(CubbyTemplate):
             qb.confetti(90)
             qb.sfx("golden")
             state.toast("🎁 +%d sparkles! %d-day streak 🔥" % (r["amount"], r["streak"]), "ok")
+
+    @handle("dream_button", "click")
+    def dream_button_click(self, **event_args):
+        """Tuck-in Time's Dream gift: the morning after the cubes were tucked in (Cubes.claim_dream)."""
+        self.dream_button.enabled = False
+        try:
+            r = state.call("claim_dream", qb.today())
+        finally:
+            self.dream_button.enabled = True
+        if not r:
+            return
+        self.data["dream"] = {"ready": False}
+        self.data["me"]["sparkles"] = r["sparkles"]
+        if r.get("hat"):
+            self.data["me"]["inventory"]["hats"] = list(self.data["me"]["inventory"].get("hats") or []) + [r["hat"]]
+            msg = "💭 %s dreamt about a %s! It's in your wardrobe now. 🎩" % (r["dreamer"], r["hat_name"])
+        else:
+            msg = "💭 %s dreamt up %d sparkles! ✨" % (r["dreamer"], r["amount"])
+        self._chips()
+        qb.confetti(80)
+        qb.sfx("golden")
+        state.toast(msg, "ok")
+
+    def _together_changed(self, **event_args):
+        self._quests()  # the quests' 🔊 buttons follow Read to me
 
     @handle("world_button", "click")
     def world_button_click(self, **event_args):

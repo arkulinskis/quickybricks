@@ -1,0 +1,28 @@
+<div class="ui qb-dialog qb-timer-dlg">
+  <h2 class="dlg-h">⏰ Play timer</h2>
+  <div anvil:name="run_part">
+    <anvil-component type="Label" name="left_label" prop:role='["qb-timer-left"]'></anvil-component>
+    <anvil-component type="Label" name="ends_label" prop:role='["dlg-lead"]'></anvil-component>
+    <anvil-component type="QuickyBricks.Components.GrownupHold" name="hold" prop:text="🔒 Grown-ups: hold 3 seconds to change or stop"></anvil-component>
+  </div>
+  <div anvil:name="grown_part">
+    <div class="ui-row qb-timer-grown">
+      <anvil-component type="Button" name="now_button" prop:text="🌙 Bedtime now" prop:role='["btn", "btn-sm", "btn-primary"]'></anvil-component>
+      <anvil-component type="Button" name="stop_button" prop:text="Stop the timer" prop:role='["btn", "btn-sm"]'></anvil-component>
+    </div>
+    <p class="qb-timer-story"><a href="https://littleheroapp.com" target="_blank" rel="noopener">📖 Grown-ups: a bedtime story starring your child, at littleheroapp.com</a></p>
+  </div>
+  <div anvil:name="pick_part">
+    <anvil-component type="Label" name="pick_lead" prop:role='["dlg-lead"]'></anvil-component>
+    <div class="qb-timer-mins">
+      <anvil-component type="Button" name="m10" prop:text="10 min" prop:role='["btn", "btn-lemon", "qb-min"]'></anvil-component>
+      <anvil-component type="Button" name="m15" prop:text="15 min" prop:role='["btn", "btn-lemon", "qb-min"]'></anvil-component>
+      <anvil-component type="Button" name="m20" prop:text="20 min" prop:role='["btn", "btn-lemon", "qb-min"]'></anvil-component>
+      <anvil-component type="Button" name="m30" prop:text="30 min" prop:role='["btn", "btn-lemon", "qb-min"]'></anvil-component>
+    </div>
+    <p class="ui-hint qb-timer-note">Two minutes before the end the cubes get sleepy. At zero your little one tucks them into bed and the game sleeps until a grown-up wakes it (or 30 minutes pass).</p>
+  </div>
+  <div class="ui-row end dlg-actions">
+    <anvil-component type="Button" name="close_button" prop:text="Close" prop:role='["btn", "btn-ghost"]'></anvil-component>
+  </div>
+</div>

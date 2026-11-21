@@ -4,7 +4,10 @@
   <div>
     <anvil-component type="Label" name="text" prop:role='["cb-q-text"]' bind:text="self.item['text']"></anvil-component>
     <div class="bar" anvil:name="bar" role="img"><i anvil:name="fill"></i></div>
-    <anvil-component type="Label" name="count" prop:role='["cb-small"]'></anvil-component>
+    <div class="cb-q-meta">
+      <anvil-component type="Label" name="count" prop:role='["cb-small"]'></anvil-component>
+      <anvil-component type="Button" name="say_button" prop:text="🔊" prop:role='["btn", "btn-sm", "qb-say"]'></anvil-component>
+    </div>
   </div>
   <div class="cb-q-end">
     <span class="ui-badge good" anvil:name="got">Got it!</span>

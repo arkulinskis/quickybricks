@@ -13,6 +13,7 @@ layout_metadata:
         <anvil-component type="RepeatingPanel" name="nav_panel" prop:item_template="QuickyBricks.Items.NavLink" prop:role='["contents"]'></anvil-component>
       </nav>
       <div class="ui-header-right">
+        <button type="button" class="qb-timer-btn" anvil:dom-node="timer_btn" aria-label="Play timer"><span aria-hidden="true">⏰</span><span class="qb-timer-txt" anvil:dom-node="timer_txt">Play timer</span></button>
         <div class="ui-row" anvil:name="guest_actions">
           <a class="ui-btn ghost" href="#auth">Sign in</a>
           <a class="ui-btn primary" href="#auth/signup">Get started</a>
@@ -63,6 +64,18 @@ layout_metadata:
       </div>
     </div>
   </footer>
+
+  <div class="qb-sleep-wrap">
+    <div class="qb-sleep" anvil:name="sleep_screen" role="dialog" aria-modal="true" aria-label="The cubes are asleep">
+      <div class="qb-sleep-sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="qb-sleep-in">
+        <div class="qb-sleep-moon" aria-hidden="true">🌙</div>
+        <h2>Shh... the cubes are asleep 💤</h2>
+        <anvil-component type="Label" name="sleep_text" prop:role='["qb-sleep-text"]'></anvil-component>
+        <anvil-component type="QuickyBricks.Components.GrownupHold" name="wake_hold" prop:text="☀️ Wake up (grown-ups: hold 3 seconds)"></anvil-component>
+      </div>
+    </div>
+  </div>
 
   <nav class="ui-tabbar" aria-label="Main" anvil:name="tabbar">
     <anvil-component type="RepeatingPanel" name="tab_panel" prop:item_template="QuickyBricks.Items.NavLink" prop:role='["contents"]'></anvil-component>

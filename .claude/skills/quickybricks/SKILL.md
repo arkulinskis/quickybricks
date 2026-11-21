@@ -76,8 +76,28 @@ theme/assets/    qb.js (the old _qb.html, unchanged: game data, faces/thumbnails
   sign-up, `sel`, `wsel`, `pos.<user id>`, `mute`, `theme`). Read them with `qb.store_get`.
 - `QB.keys` ignores arrow keys while an Anvil dialog is open (`body.modal-open`).
 
+## Play together, Paper Cube, Tuck-in Time (2026-11-20)
+
+- **Play together:** `client_code/moves.py` holds the Silly Moves (`MOVES`, `SPECIAL`, `SHEET`), the settings and the
+  turn (browser storage keys `together`, `readaloud`, `names`, `turn`; no server). `Components/MoveCard` sits over the top
+  of a stage inside a `.qb-stagebox` (never over the d-pad); pages call `self.move_card.show_for(res)` from their roll
+  hook (Landing, Cubby, Cube; not the World). `Components/TogetherBar` = the toggles + names under the stage.
+  Read to me = `QBP.say/sayIf/hush` in qb-play.js (speechSynthesis, a local English voice when there is one);
+  `state.toast` speaks through `QBP.sayIf`, `router.show` calls `QBP.hush`, `Items/Quest` has a 🔊.
+- **Paper Cube:** `QBP.papercraft(cube, moves.sheet())` (via `qb.paper_cube`), 1654x2339 PNG, content inside the top
+  2150 px so Letter prints it whole. Net = START_ORIENT (heart top, face, cupcake, swirl upside down; cloud left, spring
+  right). Side pictures come from `QB.paintIcon` (the 3D textures call the same function).
+- **Tuck-in Time:** `client_code/bedtime.py` (timer in storage key `timer`, 15 s clock started by Shell's show, the ⏰
+  button and the sleep screen live in `Layouts/Shell`), `Dialogs/PlayTimer`, `Dialogs/TuckIn` + `Items/TuckCube`,
+  `Components/GrownupHold` (3 s press-and-hold: the user wanted a simple grown-up check, no stored PIN). While asleep
+  `QB.paused` stops 3D drawing and music, QB.keys ignores keys and the World stops polling. Server: `Cubes.tuck_in(day)`
+  / `claim_dream(day)`, `dream_day` + `dream_at` inside `users.inventory` (no column); ready when the browser's day is
+  later AND 6 h passed (`DREAM_WAIT`); the browser's day is trusted only within a day of the server's.
+- **Gentle streak:** `gift_info` no longer resets a missed day.
+
 ## Recipes
 
+- **New Silly Move:** add it to `MOVES` in client_code/moves.py (indoor-safe, starts lower-case).
 - **New page / server function / table:** template-forms recipes; add the address to tools/ui/smoke.js.
 - **Change a game number** (limits, rewards, chat timing): `server_code/rules.py`; if the page shows it, also `QB.*` in
   qb.js (QB.guestReward, QB.GROW_ROLLS) and the copy in Landing/Shop/README.

@@ -13,7 +13,13 @@
       <div anvil:name="cube_part">
         <div class="cu">
           <div>
-            <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cu-stage"></anvil-component>
+            <div class="qb-stagebox cu-stagebox">
+              <div class="qb-stagebox-in">
+                <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="cu-stage"></anvil-component>
+                <anvil-component type="QuickyBricks.Components.MoveCard" name="move_card"></anvil-component>
+              </div>
+              <anvil-component type="QuickyBricks.Components.TogetherBar" name="together_bar"></anvil-component>
+            </div>
             <div class="cu-under">
               <div anvil:dom-node="pad"></div>
               <anvil-component type="Label" name="roll_tip" prop:role='["cu-tip"]'></anvil-component>
@@ -55,6 +61,10 @@
                 <div class="ui-row">
                   <anvil-component type="Button" name="world_button" prop:role='["btn", "btn-sm", "btn-mint"]'></anvil-component>
                   <anvil-component type="CheckBox" name="open_box"></anvil-component>
+                </div>
+                <div class="ui-row cu-paper">
+                  <anvil-component type="Button" name="paper_button" prop:text="🖨️ Paper cube" prop:role='["btn", "btn-sm", "btn-lemon"]'></anvil-component>
+                  <span class="ui-hint">Print it, cut, fold and roll it at the table.</span>
                 </div>
                 <div class="ui-row cu-items">
                   <anvil-component type="Button" name="potion_button" prop:role='["btn", "btn-sm"]'></anvil-component>

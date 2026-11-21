@@ -1,0 +1,25 @@
+---
+custom_component: true
+properties: []
+events:
+  - name: changed
+    description: Play together, Read to me or one of the names changed
+toolbox_item:
+  title: Play together bar
+  group: QuickyBricks
+help_text: |
+  The row under a 3D stage: Play together (Silly Move cards on every roll, taking turns), Read to me (the browser
+  speaks cards, messages and quests; hidden where the browser has no speech) and the two player names. Kept in this
+  browser only (client_code/moves.py).
+---
+<div class="qb-together">
+  <div class="qb-together-row">
+    <anvil-component type="Button" name="together_button" prop:text="👨‍👧 Play together" prop:role='["btn", "btn-sm", "qb-toggle"]'></anvil-component>
+    <anvil-component type="Button" name="read_button" prop:text="🗣️ Read to me" prop:role='["btn", "btn-sm", "qb-toggle"]'></anvil-component>
+  </div>
+  <div class="qb-together-names" anvil:name="names_row">
+    <anvil-component type="TextBox" name="kid_box" prop:placeholder="Little one" prop:role='["qb-namechip"]'></anvil-component>
+    <span class="qb-together-and" aria-hidden="true">&amp;</span>
+    <anvil-component type="TextBox" name="grown_box" prop:placeholder="Grown-up" prop:role='["qb-namechip"]'></anvil-component>
+  </div>
+</div>

@@ -73,6 +73,21 @@ def events():
     return [dict(ev[k], key=k) for k in py_value(QB.FACE_EVENT)]
 
 
+def today():
+    """This device's calendar day 'YYYY-MM-DD' (the server trusts it within a day: Dream gift timing)."""
+    return str(QBP.today())
+
+
+def events_by_key():
+    return {item["key"]: item for item in events()}
+
+
+def paper_cube(cube, sheet):
+    """Download the Paper Cube PNG (QBP.papercraft): cube = {name, color, eyes, mouth, drawing}, sheet = moves.sheet()."""
+    keep = {k: cube.get(k) for k in ("name", "color", "eyes", "mouth", "drawing")}
+    QBP.papercraft(js_value(keep), js_value(sheet))
+
+
 def eyes():
     return py_value(QB.EYES)
 

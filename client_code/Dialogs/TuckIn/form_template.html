@@ -1,0 +1,10 @@
+<div class="ui qb-dialog qb-tuck">
+  <div class="qb-tuck-sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <anvil-component type="Label" name="title" prop:role='["dlg-title", "qb-tuck-title"]'></anvil-component>
+  <anvil-component type="Label" name="lead" prop:role='["dlg-lead", "qb-tuck-lead"]'></anvil-component>
+  <anvil-component type="RepeatingPanel" name="cubes_panel" prop:item_template="QuickyBricks.Items.TuckCube" prop:role='["qb-tuck-grid"]'></anvil-component>
+  <anvil-component type="Label" name="dream_label" prop:role='["qb-tuck-dream"]'></anvil-component>
+  <div class="ui-row dlg-actions dlg-center">
+    <anvil-component type="Button" name="night_button" prop:text="Goodnight, cubes! 🌙" prop:role='["btn", "btn-lg", "btn-primary"]'></anvil-component>
+  </div>
+</div>

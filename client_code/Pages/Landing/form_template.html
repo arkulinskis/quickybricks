@@ -18,7 +18,7 @@
               <a class="ui-btn primary lg" href="#cubby">Open my Cubby 🏠</a>
             </div>
             <div class="lp-proof">
-              <span class="ui-badge">✨ Free</span><span class="ui-badge">📱 Phones + tablets</span><span class="ui-badge">🙊 Super-short chat</span><span class="ui-badge">🚫 No ads</span>
+              <span class="ui-badge">✨ Free</span><span class="ui-badge">📱 Phones + tablets</span><span class="ui-badge">🙊 Super-short chat</span><span class="ui-badge">🚫 No ads</span><span class="ui-badge">🙅 Nothing to buy</span>
             </div>
             <div class="lp-pulse" anvil:name="pulse">
               <span>🧊 <anvil-component type="Label" name="pulse_cubes" prop:role='["pulse-num"]'></anvil-component> cubes so far</span>
@@ -28,7 +28,13 @@
           </div>
 
           <div class="lp-play">
-            <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="lp-stage"></anvil-component>
+            <div class="qb-stagebox lp-stagebox">
+              <div class="qb-stagebox-in">
+                <anvil-component type="QuickyBricks.Components.Stage" name="stage" prop:look="lp-stage"></anvil-component>
+                <anvil-component type="QuickyBricks.Components.MoveCard" name="move_card"></anvil-component>
+              </div>
+              <anvil-component type="QuickyBricks.Components.TogetherBar" name="together_bar"></anvil-component>
+            </div>
             <div class="lp-under">
               <div anvil:dom-node="pad"></div>
               <div class="lp-tune">
@@ -57,6 +63,7 @@
               <anvil-component type="Label" name="earn_label" prop:text="Tap me, swipe me, or use the arrows!" prop:role='["lp-earn"]'></anvil-component>
               <a class="ui-btn sm primary" href="#auth/signup" anvil:name="keep_link">Keep this cube 💾</a>
               <a class="ui-btn sm primary" href="#make" anvil:name="make_link">Make it for real</a>
+              <anvil-component type="Button" name="paper_button" prop:text="🖨️ Paper cube" prop:role='["btn", "btn-sm", "btn-lemon"]' prop:tooltip="Print it, cut it, fold it, roll it at the table"></anvil-component>
             </div>
           </div>
         </div>
@@ -134,6 +141,9 @@
             <details><summary>Why only 3 letters in the chat?</summary><p>So it stays friendly! You can say HI!, YAY or send a 💖, one message every 30 seconds, and messages vanish after a minute or two.</p></details>
             <details><summary>How do I get more than 10 cubes?</summary><p>You can make 10 cubes by hand. After that, send cubes to the World and hold hands with other players' cubes: each time, a baby is born. Babies get one parent's eyes, one parent's mouth and a mixed-up colour.</p></details>
             <details><summary>What if someone draws something rude?</summary><p>Tap their cube and press Report. A grown-up moderator can wipe the drawing, change the name or send the cube home.</p></details>
+            <details><summary>Can a grown-up play too?</summary><p>Yes! Turn on 👨‍👧 Play together under the cube. Every roll pops a Silly Move card (spring jumps, toot noises, hugs, a dizzy disco) for the little one and the grown-up, taking turns. 🗣️ Read to me reads the cards out loud for children who can't read yet.</p></details>
+            <details><summary>How do we stop without a fight?</summary><p>Set the ⏰ Play timer at the top. Two minutes before the end the cubes get sleepy. At zero your little one tucks them into bed and the game sleeps until a grown-up holds Wake up. Players with an account find a 💭 Dream gift the next morning: the only reward in QuickyBricks is for stopping.</p></details>
+            <details><summary>Can we play away from the screen?</summary><p>Press 🖨️ Paper cube: you get your cube as a fold-up paper cube on one A4 or Letter sheet, with the six Silly Moves printed on it. Cut, fold, glue, and roll it on the kitchen table.</p></details>
             <details><summary>Does it work on my phone or tablet?</summary><p>Yes. Swipe on a cube or use the big arrow buttons. It runs in the browser, nothing to install.</p></details>
           </div>
         </div>
